@@ -1,0 +1,327 @@
+<div class="content-wrapper container">
+  <div class="panel">
+    <div class="panel-container show">
+      <div class="panel-content">
+        <div class="panel-tag" *ngIf="selectedActivelink">
+          <h4>{{ message }}</h4>
+          ,
+          <small>Open vendors: {{ openCount }}, Closed vendors: {{ closeCount }},
+            Total vendors: {{ totalCount }}</small>
+        </div>
+        <div class="card border">
+          <div *ngIf="!displayItems">
+          <label>select location</label>
+          <select class="form-control loc-drop"  [(ngModel)]="location" (change)='selectLoc()'>
+            <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+          </select>
+          </div>
+          <div class="card-header1" *ngIf="displayItems">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item" *ngFor="let item of menuItems"
+                (click)="gotoVendorList(item.id); selectedActivelink = item.id">
+                <a class="nav-link" [ngClass]="{ active: selectedActivelink == item.id }">{{ item.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="card-group" *ngIf="selectedActivelink">
+              <div class="card-header">
+                Change Vendor order List,
+
+                <button *ngIf="showVendors" class="btn btn-success pull-right"
+                  (click)="showVendors = false; sortVendors()" style="margin-left: 10px">
+                  Change Order
+                </button>
+                <button class="btn btn-primary pull-right" (click)="showVendors = !showVendors">
+                  {{ showVendors ? "Hide" : "Show" }} Vendor List
+                </button>
+              </div>
+
+              <div class="card-body" *ngIf="showVendors">
+                <div class="col-xs-9 col-9 col-md-9 col-lg-9">
+                  <ng-template #itemTemplate let-item="item" let-index="index"><span>{{ index + 1 }} - {{ item.value
+                      }}</span></ng-template>
+                  <bs-sortable [(ngModel)]="sortRestraurants" [itemTemplate]="itemTemplate" fieldName="name"
+                    itemClass="sortableItem" itemActiveClass="sortableItemActive" wrapperClass="sortableWrapper">
+                  </bs-sortable>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-group" *ngIf="selectedActivelink">
+              <div class="card-header">
+                Vendor List
+
+                <button class="btn btn-primary pull-right" (click)="opendelivered(template, 'new')"
+                  style="margin-left: 10px">
+                  Add Vendor
+                </button>
+                <input [(ngModel)]="terms" placeholder="Search Item" class="search-f" />
+              </div>
+              <div class="card-body">
+                <div class="form-group row">
+                  <div class="col-lg-12">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Logo</th>
+                          <th>Name</th>
+                          <th>Mobile</th>
+                          <th>Open time</th>
+                          <th>Close time</th>
+                          <th>Active</th>
+                          <th>Edit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="
+                            let hotel of restraurants | search: terms:name
+                          ">
+                          <td class="" style="width: 100px">
+                            <div class="img-upload">
+                              <div class="img-container">
+                                <img *ngIf="hotel.media" class="img-responsive" [src]="hotel.media" />
+                                <label *ngIf="!hotel.media">No Image</label>
+                              </div>
+
+                              <form [formGroup]="form" (ngSubmit)="submit()">
+                                <div class="form-group">
+                                  <input type="file" accept=".png, .jpg, .jpeg"
+                                    (change)="uploadImage($event, hotel.id)" />
+                                </div>
+                                <div class="form-group" *ngIf="
+                                    currentFileUpload && selectedId == hotel.id
+                                  ">
+                                  <button class="btn btn-success btn-sm">
+                                    Upload/Change
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </td>
+
+                          <td>
+                            <strong>{{ hotel.name }}</strong>
+                          </td>
+                          <td>
+                            <strong>{{ hotel.mobile }}</strong>
+                          </td>
+                          <td>{{ hotel.open_time }}</td>
+                          <td>{{ hotel.close_time }}</td>
+                          <td class="text-center">
+                            <button class="btn btn-sm" [ngClass]="
+                                hotel.is_active == 1
+                                  ? 'btn-success'
+                                  : 'btn-warning'
+                              " (click)="isActive(hotel)">
+                              {{
+                              hotel.is_active == 1 ? "Enabled" : "Disabled"
+                              }}
+                            </button>
+                          </td>
+                          <td class="text-center">
+                            <button class="btn btn-danger btn-sm" (click)="
+                                opendelivered(
+                                  template,
+                                  'edit',
+                                  (idVendor = hotel.id),
+                                  hotel
+                                )
+                              ">
+                              <fa-icon [icon]="faEdit"></fa-icon>Edit
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">Vendor Details</div>
+  <div class="modal-body text-center">
+    <div class="">
+      <div class="form-group row">
+        <div class="col-md-10">
+          <div class="row register-form">
+            <div class="col-md-6">
+              <div class="form-group text-left">
+                <label>Name</label>
+                <input type="text" [(ngModel)]="addName" class="form-control" placeholder="Name *" value="" />
+              </div>
+              <div class="form-group time text-left">
+                <label>Open time<span class="required">*</span></label>
+                <timepicker [(ngModel)]="open_time" (isValid)="isValid($event)"></timepicker>
+                <div *ngIf="!validOpentime" class="alert alert-danger">
+                  Invalid Open time
+                </div>
+              </div>
+
+              <div class="form-group time text-left">
+                <label>Close time<span class="required">*</span></label>
+                <timepicker [(ngModel)]="close_time" (isValid)="isValidClose($event)"></timepicker>
+                <div *ngIf="!validClosetime" class="alert alert-danger">
+                  Invalid Close time
+                </div>
+              </div>
+
+              <div class="form-group text-left">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="rating" />Top
+                  Store</label>
+              </div>
+              <div class="form-group text-left">
+                <label>Address <span class="required">*</span></label>
+                <textarea type="text" [(ngModel)]="address" class="form-control" placeholder="Address *"
+                  value=""></textarea>
+              </div>
+
+              <div class="form-group text-left">
+                <label>Description <span class="required">*</span></label>
+                <textarea type="text" [(ngModel)]="description" class="form-control" placeholder="description *"
+                  value=""></textarea>
+              </div>
+
+              <div class="form-group text-left">
+                <label>Latitude</label>
+                <input type="number" class="form-control" [(ngModel)]="lat" value="" />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Longitude</label>
+                <input type="number" class="form-control" [(ngModel)]="lng" value="" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group text-left">
+                <label>Types <span class="required">*</span></label>
+                <select [(ngModel)]="typeVal" class="form-control" multiple style="height: 300px">
+                  <option *ngFor="let type of types" [value]="type.id">
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group text-left">
+                <label>Delivery time <span class="required">*</span></label>
+                <input type="number" class="form-control" [(ngModel)]="deliveryTime"
+                  placeholder="Delivery time in min *" value="" onKeyPress="if(this.value.length==3) return false;" />
+              </div>
+
+              <div class="form-group text-left">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="freeDelivery" />Free
+                  Delivery Offer
+                </label>
+              </div>
+
+              <div class="form-group text-left">
+                <label>License Number</label>
+                <input type="text" class="form-control" [(ngModel)]="license" placeholder="Enter license no" value=""
+                  onKeyPress="if(this.value.length==20) return false;" />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Mobile Number <span class="required">*</span></label>
+                <input type="tel" class="form-control" [(ngModel)]="mobile" placeholder="Enter Mobile number" value=""
+                  onKeyPress="if(this.value.length==10) return false;" />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Item tax</label>
+                <input type="tel" class="form-control" [(ngModel)]="originalItemTax" placeholder="Original item tax *"
+                  value="" onKeyPress="if(this.value.length==2) return false;" />
+              </div>
+
+              <!-- <div class="form-group text-left">
+                <label>Payable item tax</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  [(ngModel)]="payableItemTax"
+                  placeholder="payable item tax *"
+                  value=""
+                  onKeyPress="if(this.value.length==2) return false;"
+                />
+              </div> -->
+
+              <div class="form-group text-left">
+                <label>Percentage to APNA CHOTU</label>
+                <input type="tel" class="form-control" [(ngModel)]="percentageChotu" placeholder="percentage Chotu *"
+                  value="" onKeyPress="if(this.value.length==2) return false;" />
+              </div>
+
+
+
+              <div class="form-group text-left">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="acceptNotDeliver" />Accept not
+                  delivered Orders?
+                </label>
+              </div>
+
+              <!-- <div class="form-group text-left">
+                <label>Vendor Image</label>
+                
+               
+
+
+
+              
+
+                <input
+                  type="file"
+                  name="img"
+                  accept="image/*"
+                  (change)="onFileChanged($event)"
+                />
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- [disabled]="!rating || !close_time || !open_time || !description || !address || !addName || !closeT || !openT || !typeVal || !deliveryTime" -->
+  <div class="modal-footer">
+    <button class="btn btn-primary" *ngIf="isView == 'new'" (click)="addVendor()" [disabled]="
+        !lat ||
+        !lng ||
+        !close_time ||
+        !open_time ||
+        !description ||
+        !address ||
+        !addName ||
+        !closeT ||
+        !openT ||
+        !typeVal ||
+        !deliveryTime ||
+        !validClosetime ||
+        !validOpentime ||
+        !originalItemTax||
+       
+        (!mobile && mobile.length < 10)
+      ">
+      Create Vendor
+    </button>
+
+    <button class="btn btn-success" *ngIf="isView == 'edit'" (click)="editVendor()">
+      Update Vendor
+    </button>
+
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

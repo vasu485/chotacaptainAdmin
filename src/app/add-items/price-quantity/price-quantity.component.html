@@ -1,0 +1,27 @@
+<div class="">
+	<table class="table table-stripped">
+    <thead>
+     
+      <tr>
+        <td style="width: 140px;">Quantity</td>
+        <td>Price</td>
+        <td>Action </td>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of addForm.get('rows')?.controls;let index = index;">
+        <td style="width: 140px;">
+           <input style="width: 90%;" type="text"  [formControl]="row.get('quantity')" placeholder="Ex: 200 Grms, 1 Kg, 20">
+        </td>
+        <td style="width: 140px;">
+           <input style="width: 100%" type="number" [formControl]="row.get('price')" placeholder="Ex: 10, 20, 100">
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm " *ngIf="index > 0" (click)="onRemoveRow(index)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-primary btn-block " [disabled]="isDisabled()" (click)="onAddRow()" *ngIf="addForm.get('rows')">add row</button>
+
+  </div>

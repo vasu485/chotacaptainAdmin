@@ -1,0 +1,19 @@
+<app-topbar (menuToggle)="menuToggle($event)"></app-topbar>
+
+<div [ngClass]="sidebarCollapse ? 'sidebar-collapse' : ''">
+
+  <div class="page-content">
+    <div class="page-header position-relative">
+
+        <ul class="navbar-nav">
+          <li *ngFor="let menu of menus" [routerLink]="menu.url" routerLinkActive="active-link" [ngClass]="{ 'in-active': !menu.hide }" >
+              <fa-icon class="icon-fa" [icon]="faCaretDown"></fa-icon> {{menu.name}} 
+          </li>
+      </ul>
+     
+    </div>
+
+    <router-outlet></router-outlet>
+
+  </div>
+</div>

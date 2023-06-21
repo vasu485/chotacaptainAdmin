@@ -1,0 +1,226 @@
+<div class="content-table">
+  <div class="card-head">
+    <div class="input-group in-ine">
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="searhId"
+        placeholder="Search by id for Order"
+      />
+    
+      <div class="input-group-append">
+        <button
+          [disabled]="!searhId"
+          class="btn btn-primary"
+          type="button"
+          (click)="getOrder(searhId)"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card-head">
+    <h3 class="header-page"><h2 class="order-count">#{{totalOrderCount}}</h2>: {{ headerText }} Orders </h3>
+    
+    <div class="buttons-page">
+
+      <button class="btn btn-sm btn-primary has-icon" (click)="filterdOrders(); this.catgoryId ='null'; ">
+        All
+      </button>
+
+      <button class="btn btn-sm btn-warning has-icon" (click)="filterdOrders(1, 'Placed', 10); this.catgoryId ='null'; ">
+        Placed
+      </button>
+
+      <button class="btn btn-sm btn-success has-icon" (click)="filterdOrders(2, 'Confirmed'); this.catgoryId ='null'; ">
+        Confirmed
+      </button>
+
+      <button class="btn btn-sm btn-danger has-icon"
+        (click)="filterdOrders(13, 'Not Accepted'); this.catgoryId ='null'"
+      >
+      Not Accepected
+    </button>
+
+
+    <button class="btn btn-sm btn-success has-icon" (click)="filterdOrders(12, 'Accepted'); this.catgoryId ='null'; ">
+      Accepted
+    </button>
+
+      <button class="btn btn-sm btn-success has-icon" (click)="filterdOrders(5, 'On the way'); this.catgoryId ='null'; ">
+        On the way
+      </button>
+
+      <button class="btn btn-sm btn-success has-icon" (click)="filterdOrders(7, 'Payment Received'); this.catgoryId ='null'; ">
+        Payment Received
+      </button>
+
+        <!-- Single button -->
+        <div class="btn-group" dropdown *ngIf="isAdmin">
+          <button dropdownToggle type="button" class="btn btn-danger dropdown-toggle" >
+            Partner <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+            <li role="menuitem" *ngFor="let location of locationListArr">
+              <a class="dropdown-item"  (click)="showLocations(location)"> {{location.name}}</a>
+            </li>
+            <!-- <li role="menuitem" >
+              <a class="dropdown-item"  (click)="filterdOrders(); this.catgoryId ='null';"> All</a>
+            </li> -->
+          </ul>
+        </div>
+            
+
+      <div class="btn-group" dropdown>
+        <button dropdownToggle type="button" class="btn btn-primary has-icon"
+                aria-controls="dropdown-basic"  (click)="isDisabledLoc = true"> 
+          In Active Orders  <span class="caret"></span>
+        </button>
+
+        <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+          <li role="menuitem" >
+            <a class="dropdown-item"   (click)="showDelvered(); this.catgoryId ='null'"> Delivered Orders</a>
+          </li>
+          <li role="menuitem" >
+            <a class="dropdown-item" (click)="canceledDelvered();  this.catgoryId ='null'"> Canceled Orders</a>
+          </li>
+          <li role="menuitem" >
+            <a class="dropdown-item"   (click)="notDelvered(); this.catgoryId ='null'"> Not Delivered Orders</a>
+          </li>
+          <li role="menuitem" >
+            <a class="dropdown-item"   (click)="noStpckPrders(); this.catgoryId ='null'"> Out of stock Orders</a>
+          </li>
+        </ul>
+      </div>
+
+
+     
+      <div class="btn-group" dropdown>
+        <button dropdownToggle type="button" class="btn btn-primary has-icon"
+                aria-controls="dropdown-basic" (click)="isDisabledLoc = true">
+          Order Categories <span class="caret"></span>
+        </button>
+
+        <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+          <li role="menuitem" *ngFor="let menuItem of menuItems">
+            <a class="dropdown-item"  (click)="menuItem.id != null ? showFoodOrders(menuItem.id):showMisc(); headerText = menuItem.name; isDisabledLoc = true;"> {{menuItem.name}} Orders</a>
+          </li>
+        </ul>
+      </div>
+      
+  </div>
+
+  
+</div>
+<div class="location-name" *ngIf="locationName">{{locationName}}'s {{headerText}} Orders</div>
+<div class="card">
+  <div class="date-container" *ngIf="isLoadDateVisible">
+    <div class="form-inline">
+      <div class="form-group">
+        <label for="inputPassword2">Start Date</label>
+        <input type="date" [(ngModel)]="selectDate" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword2">End Date</label>
+        <input type="date" [(ngModel)]="selectEndDate" class="form-control" />
+      </div>
+
+      <button
+
+        class="btn btn-warning"
+        (click)="selectDate=null; selectEndDate=null "
+      >
+        Clear
+      </button>
+
+      <button
+        class="btn btn-success"
+        (click)="getOrdersLoadmoreSubmit()"
+        [disabled]="!selectDate || !selectEndDate"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+
+  <table class="table table-striped custom-tbody">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Vendor</th>
+        <th>Items</th>
+        <th>Price</th>
+        <!-- <th>Payment</th> -->
+        <th>Status</th>
+        <th style="width: 200px">Details</th>
+        <th>Delivery boy</th>
+        <th>Order Timings</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody
+      app-order-list
+      *ngFor="let orderLists of orderList"
+      [orderList]="orderLists"
+      [deliveryBoys]="boysArr"
+      (upadteOrder)="updateOrderts($event)"
+    ></tbody>
+  </table>
+</div>
+
+<div *ngIf="orderList.length==0" class="no-orders"> No Orders found</div>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>
+
+<div class="modal-backdrop" *ngIf="openModel"></div>
+<div class="modal fade in" *ngIf="openModel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Order: {{ searhId }}</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped ">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Vendor</th>
+              <th>Items</th>
+              <th>Price</th>
+              <!-- <th>Payment</th> -->
+              <th>Status</th>
+              <th style="width: 200px">Details</th>
+              <th>Delivery boy</th>
+              <th>Order Timings</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody
+            app-order-list
+            [orderList]="orderSearch"
+            [deliveryBoys]="boysArr"
+            (upadteOrder)="updateOrderts($event)"
+            class="custom-tbody"
+          ></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="closeFn()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="load-more" *ngIf="isLoadMoreBtn">
+  <button class="btn btn-danger btn-block" (click)="getOrdersLoadmore()">
+    Load more
+  </button>
+</div>

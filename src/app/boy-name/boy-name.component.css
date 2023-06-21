@@ -1,0 +1,45 @@
+
+
+.menu-header{
+
+    display: block;
+    float: left;
+    width: 100%;
+    margin-bottom: 8px;
+}
+.menu-header:first-child{
+    border: 1px solid #dad2a8;
+}
+
+
+.menu-header div{
+    padding: 8px;
+    border-right: 1px solid #eee;
+    text-align: left;
+    min-height: 46px;
+}
+.menu-header div:first-child{
+    width: 10%;
+    float: left;
+    text-align: left;
+}
+
+.menu-header div:nth-child(2){
+    width: 40%;
+    float: left;
+}
+.menu-header div:nth-child(3){
+    width: 20%;
+    float: left;
+}
+
+.menu-header div:last-child{
+    width: 30%;
+    float: left;
+    text-align: right;
+    
+}
+.btn{
+    margin: 0 10px;
+}
+

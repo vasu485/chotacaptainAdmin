@@ -1,0 +1,210 @@
+.sidebar {
+    position: absolute;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 235px;
+    height: 100%;
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    border-right-color: transparent!important;
+    top: 52px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+    -moz-box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+}
+
+.sidebar-collapse  .sidebar{
+    width: 56px;
+  }
+
+.sidebar-body {
+    position: relative;
+    overflow-y: auto;
+    height: calc(100% - 56px);
+    width: 235px;
+}
+.ps {
+    overflow: hidden!important;
+    overflow-anchor: none;
+    -ms-overflow-style: none;
+    touch-action: auto;
+    -ms-touch-action: auto;
+}
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+.nav-sub {
+    flex-direction: column;
+}
+.nav-label {
+    margin-top: 1.5rem;
+    margin-bottom: .5rem;
+    font-size: 80%;
+    color: #aaa;
+    padding-left: 1rem;
+}
+.sidebar .nav-label {
+    color: rgba(255,255,255,.4);
+    cursor: pointer;
+}
+
+.nav-link{
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.nav-link.has-icon {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link{
+    border-top: 1px solid #f3f3f3;
+    text-decoration: none;
+    color: #737373;
+}
+.nav-link:hover {
+    text-decoration: none;
+    color: #262626;
+    background-color: #f5f5f5;
+}
+
+
+.page-content {
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    min-height: 100%;
+    padding: 0;
+    -webkit-transition: all .25s cubic-bezier(.4,0,.2,1);
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar-collapse  .page-content{
+    margin-left: 0;
+  }
+
+
+.page-breadcrumbs {
+    position: relative;
+    background: #f3f3f3;
+    min-height: 40px;
+    line-height: 39px;
+    padding: 0;
+    display: block;
+    z-index: 1;
+    -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+    -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+}
+.page-header {
+    position: relative;
+    margin: 0;
+    padding-bottom: 1px;
+    padding-left: 12px;
+    background: #fff;
+    box-shadow: 0 0 .25rem rgba(0,0,0,.075)!important;
+    z-index: 100;
+    min-height: 40px;
+    border-bottom: 1px solid #e5e5e5;
+    min-height: 67px;
+    position: sticky;
+    top: 0;
+}
+.page-header .header-title {
+    display: inline-block;
+    position: relative;
+    height: 40px;
+}
+.page-header .header-title h1 {
+    padding: 0;
+    margin: 0 4px;
+    font-size: 17px;
+    font-weight: lighter;
+    color: #737373;
+    line-height: 37px;
+    display: inline-block;
+}
+
+
+
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    float: none;
+    list-style: none;
+}
+
+.navbar-nav li{
+    cursor: pointer;
+    position: relative;
+    padding: 10px 18px;
+    font-size: 14px;
+    text-transform: uppercase;
+    min-width: 100px;
+    text-align: center;
+    font-weight: 600;
+    margin: 0 0;
+    min-height: 67px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+.navbar-nav li .icon-fa {
+    margin-right: .5em;
+    margin-left: .125em;
+    font-size: 1.25em;
+}
+
+.navbar-nav li.active-link, .navbar-nav li:hover{
+    position: relative;
+    color: #ffffff;
+    background: #f74f02;
+}
+
+
+.multi-dropdown{
+    position: absolute;
+    top: 100%;
+    z-index: 0;
+    background: #fff;
+    z-index: 101;
+    min-width: 180px;
+    box-shadow: 0 0 .25rem rgba(0,0,0,.075)!important;
+    left: 0;
+    display: none;
+    color: #333;
+}
+
+.multi-dropdown div{
+    padding: 12px;
+    border-bottom: 1px solid #cfdbe2;
+    color: #333;
+}
+
+.multi-dropdown div:hover, .multi-dropdown div.active-link{
+    color: #ffffff;
+    background: #f74f02;
+}
+
+
+
+
+.list-item:hover .multi-dropdown{
+    display: block;
+}
+
+.in-active{
+    display: none !important;
+}

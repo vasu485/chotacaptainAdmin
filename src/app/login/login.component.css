@@ -1,0 +1,155 @@
+.login-page {
+  background: url("../../assets/images/bg.png");
+  background-color: #ff7900;
+  background-repeat: no-repeat;
+  object-fit: cover;
+  background-size: cover;
+  height: 100vh;
+}
+
+.login-page .container {
+  padding-top: 10%;
+  /* position: absolute;
+    left: 12%; */
+}
+.error-text {
+  color: #ed1a00;
+}
+.container,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl {
+  max-width: 1140px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+.d-flex {
+  display: flex !important;
+}
+
+@media (min-width: 768px) {
+  .col-md-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+  }
+  .card-style-1 {
+    /* border-radius: 1.5em; */
+    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+  }
+  .login-page .card {
+    width: 350px;
+    border-top: 4px solid;
+  }
+  .p-4 {
+    padding: 1.5rem !important;
+  }
+  .form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 70ms ease-in-out, box-shadow 70ms ease-in-out;
+  }
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  .floating-label {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .form-control {
+    height: 5.125rem;
+    padding: 0.75rem;
+  }
+
+  .btn-block {
+    height: 50px;
+    margin-top: 2rem;
+  }
+}
+
+.btn-Apna {
+  background-image: linear-gradient(to right, #ff7900, #ed1a00);
+  border-color: #ed1a00;
+  position: relative;
+}
+
+.btn-Apna:hover {
+  background-image: linear-gradient(to right, #ed1a00, #ff7900);
+}
+
+.btn-Apna:focus {
+  outline: 0.05em dashed #ff6600;
+  outline-offset: 0.05em;
+}
+
+.btn-Apna::after {
+  content: "";
+  display: block;
+  width: 1.2em;
+  height: 1.2em;
+  position: absolute;
+  left: calc(50% - 0.75em);
+  top: calc(50% - 0.75em);
+  border: 0.15em solid transparent;
+  border-right-color: white;
+  border-radius: 50%;
+  animation: button-anim 0.7s linear infinite;
+  opacity: 0;
+}
+
+@keyframes button-anim {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-Apna.loading {
+  color: transparent;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.btn-Apna.loading::after {
+  opacity: 1;
+}
+
+.text-decoration-underline {
+  text-decoration: underline;
+  color: black;
+  cursor: pointer;
+}

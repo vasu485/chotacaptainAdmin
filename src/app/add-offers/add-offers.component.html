@@ -1,0 +1,415 @@
+<div class="content-wrapper container">
+  <div class="card card-default">
+    <div class="card-header">
+      <ul class="nav nav-pills">
+        <li *ngIf="isAdmin" [ngClass]="isActive == 0 ? 'active' : ''">
+          <a
+            (click)="
+              finalofferList = null;
+              isViewItems = false;
+              getDashboardOfferFn();
+              isActive = 0
+            "
+            >Main Offers</a
+          >
+        </li>
+        <li [ngClass]="isActive == 1 ? 'active' : ''">
+          <a (click)="isActive = 1">Vedor Offers</a>
+        </li>
+
+        <li  *ngIf="isAdmin" [ngClass]="isActive == 2 ? 'active' : ''">
+          <a (click)="getAnnouncementsFn(); isActive = 2">Announcements</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body" *ngIf="isActive == 1">
+
+      <div class="form-inline">
+        <div class="form-group mb-2">
+          <!-- <label for="staticEmail2" class="form-label">Select Vendor type: </label> -->
+
+          <select
+            class="restarant"
+            [(ngModel)]="selectVendorType"
+            (change)="isShow = false; isViewItems = false"
+            class="form-control select-box"
+          >
+            <option class="hidden" selected="" disabled="">Select</option>
+            <option *ngFor="let menuItem of menuItems" [value]="menuItem.id">
+              {{ menuItem.name }}
+            </option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary mb-2"
+          (click)="getrestarentsFn()"
+          [disabled]="!selectVendorType"
+        >
+          Show Vendor type
+        </button>
+
+      
+        
+      </div>
+      <hr  *ngIf="isShow" />
+      <div class="form-inline"  *ngIf="isShow">
+      <div class="form-group mb-2">
+        <!-- <label class="form-label">Select Vendor: </label> -->
+
+        <select
+          class="form-control select-box"
+          [(ngModel)]="nrSelect"
+          (change)="isViewItems = false"
+        >
+          <option class="hidden" selected="" disabled="">Select</option>
+          <option
+            *ngFor="let restraurant of restraurants"
+            [value]="restraurant.id"
+            [value]="restraurant.id"
+          >
+            {{ restraurant.name }}
+          </option>
+        </select>
+
+       
+      </div>
+
+      <button
+      type="submit"
+      class="btn btn-success mb-2"
+      (click)="showItems(nrSelect)"
+      [disabled]="!nrSelect"
+    >
+      select vendor
+    </button>
+      </div>
+
+
+    </div>
+
+    <div class="card-body" *ngIf="isActive == 0">
+      <h4>Main Offers</h4>
+
+      <button
+        class="btn btn-primary m-4 pull-right"
+        (click)="addOfferFn(Offer); isMainOfferView = false"
+      >
+        Add Offers
+      </button>
+
+      <table class="table table-bordered my-table">
+        <thead>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Action</th>
+        </thead>
+
+        <tbody *ngFor="let offer of dashbaordOffers">
+          <tr class="tr">
+            <td colspan="3">{{ offer.group }}</td>
+            <!-- <td>
+              <button class="btn btn-danger btn-sm" (click)="updateGroup(offer.id)">Active Group</button>
+            </td> -->
+          </tr>
+          <tr *ngFor="let item of offer.items">
+            <td>{{ item.title }}</td>
+            <td>{{ item.description }}</td>
+            <td>
+              <button
+                class="btn btn-warning btn-sm m-4"
+                (click)="updateOfferActive(Offer, item); isMainOfferView = true"
+              >
+                <fa-icon [icon]="faEdit"></fa-icon> Edit
+              </button>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="deleteOfferActive(item)"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-body" *ngIf="isActive == 2">
+      <h4>Announcements</h4>
+
+      <button
+        class="btn btn-primary m-4 pull-right"
+        (click)="createAnnouncementsOpen(Announcement)"
+      >
+        Add Announcement
+      </button>
+
+      <table class="table table-bordered my-table">
+        <thead>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Action</th>
+        </thead>
+
+        <tbody *ngFor="let offer of getAllAnnouncements">
+          <tr>
+            <td>{{ offer.title }}</td>
+            <td>{{ offer.description }}</td>
+            <td>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="deleteAnnoun(offer.id)"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card card-default" *ngIf="isViewItems">
+    <div class="card-header">
+      <h5>
+        Offer List
+        <button
+          *ngIf="finalofferList.length == 0 || finalofferList[0].is_active == 0"
+          class="btn btn-primary m-4 pull-right"
+          (click)="openModel(group, 'new')"
+        >
+          Add Vendor Offer
+        </button>
+      </h5>
+    </div>
+
+    <div class="card-body" *ngIf="finalofferList.length > 0">
+      <table class="table table-bordered my-table">
+        <thead>
+          <tr>
+            <th>Created On</th>
+            <th>Min Order</th>
+            <th>Offer Percentage</th>
+            <th>Max Offer Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let list of finalofferList">
+            <td>{{ list.createdOn }}</td>
+            <td>{{ list.minOrder }}</td>
+            <td>{{ list.offerPercentage }}</td>
+            <td>{{ list.maxOfferAmount }}</td>
+            <td>{{ list.is_active == 1 ? "Active" : "Inactive" }}</td>
+            <td>
+              <button
+                class="btn btn-danger btn-sm"
+                *ngIf="list.is_active == 1"
+                (click)="openModel(group, 'delete', list)"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #group>
+  <div class="modal-header" *ngIf="isView != 'delete'">Add Offer</div>
+  <div class="modal-body">
+    <div class="" *ngIf="isView != 'delete'">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="row register-form">
+            <div class="col-md-12">
+              <div class="form-group text-left">
+                <label>Min Order</label>
+                <input
+                  type="text"
+                  [(ngModel)]="minOrder"
+                  class="form-control"
+                  placeholder="Min Order *"
+                  value=""
+                />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Offer Percentage</label>
+                <input
+                  type="text"
+                  [(ngModel)]="offerPercentage"
+                  class="form-control"
+                  placeholder="Offer Percentage *"
+                  value=""
+                />
+              </div>
+              <div class="form-group text-left">
+                <label>Max Offer Amount</label>
+                <input
+                  type="text"
+                  [(ngModel)]="maxAmount"
+                  class="form-control"
+                  placeholder="Max Offer Amount *"
+                  value=""
+                />
+              </div>
+
+              <!-- <div class="checkbox">
+                    <label><input type="checkbox" [(ngModel)]='offerActive' >Active</label>
+                  </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="isView == 'delete'">Are you sure want to delete this Offer?</p>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      *ngIf="isView == 'new'"
+      (click)="createOfferFn()"
+      [disabled]="!minOrder || !offerPercentage || !maxAmount"
+    >
+      Create Offer
+    </button>
+
+    <button
+      type="button"
+      *ngIf="isView == 'delete'"
+      class="btn btn-success"
+      (click)="deleteOffer()"
+    >
+      <fa-icon [icon]="faTrash"></fa-icon> Remove Offer
+    </button>
+
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      <fa-icon [icon]="faTimes"></fa-icon> Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #Offer>
+  <div class="modal-header">Add/Edit Main Offer</div>
+  <div class="modal-body">
+    <div class="">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="row register-form">
+            <div class="col-md-12">
+              <!-- <div class="form-group text-left">
+                <label>Catagiroy </label>
+                <select class="form-control" [(ngModel)]='offerCategory' class="form-control">
+                  <option *ngFor="let cat of CategoriesObj" [value]="cat.id">{{cat.name}}</option>
+                </select>
+              </div> -->
+
+              <div class="form-group text-left">
+                <label>Offer Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="offerTitle"
+                  class="form-control"
+                  placeholder="Offer Name *"
+                />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Offer Description</label>
+                <textarea
+                  [(ngModel)]="offerDescription"
+                  class="form-control"
+                  placeholder="Offer Description *"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      *ngIf="!isMainOfferView"
+      (click)="createMainOfferFn()"
+      [disabled]="!offerTitle || !offerDescription"
+    >
+      <fa-icon [icon]="faEdit"></fa-icon> Create Main Offer
+    </button>
+
+    <button
+      type="button"
+      *ngIf="isMainOfferView"
+      class="btn btn-success"
+      (click)="updateMainOfferFn()"
+    >
+      <fa-icon [icon]="faEdit"></fa-icon> Update Main Offer
+    </button>
+
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      <fa-icon [icon]="faTimes"></fa-icon> Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #Announcement>
+  <div class="modal-header">Create Announcement</div>
+  <div class="modal-body">
+    <div class="">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="row register-form">
+            <div class="col-md-12">
+              <div class="form-group text-left">
+                <label>Announcement Title</label>
+                <input
+                  type="text"
+                  [(ngModel)]="announcementTitle"
+                  class="form-control"
+                  placeholder="Offer Name *"
+                />
+              </div>
+
+              <div class="form-group text-left">
+                <label>Announcement Description</label>
+                <textarea
+                  [(ngModel)]="announcementDescription"
+                  class="form-control"
+                  placeholder="announcement Description *"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      (click)="createAnnouncementsFn()"
+      [disabled]="!announcementTitle || !announcementDescription"
+    >
+      <fa-icon [icon]="faEdit"></fa-icon> Create
+    </button>
+
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      <fa-icon [icon]="faTimes"></fa-icon> Cancel
+    </button>
+  </div>
+</ng-template>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

@@ -1,0 +1,156 @@
+td {
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+  /* background-color: #fff; */
+  font-weight: 400;
+  /* white-space: nowrap; */
+  padding: 20px 10px !important;
+}
+
+.badge {
+  background-color: #009688;
+}
+
+.badge-placed {
+  color: #fff;
+  background-color: orange;
+}
+.badge-confirmed {
+  color: #fff;
+  background-color: #1f07e7;
+}
+.badge-delivered,
+.badge-payment {
+  color: #fff;
+  background-color: #15a902;
+}
+.badge-unavailable {
+  color: #fff;
+  background-color: #ff0000;
+}
+.badge-cooking {
+  color: #fff;
+  background-color: #3f51b5;
+}
+
+.badge-ontheway {
+  color: #fff;
+  background-color: #ac15a0;
+}
+
+.badge-prepared {
+  background-color: #15ac35;
+}
+
+.badge-payment {
+  color: #fff;
+  background-color: #15a902;
+}
+
+.badge-not-delevered {
+  color: #fff;
+  background-color: #ff0000;
+}
+.collapse:not(.show) {
+  display: none !important;
+}
+.detail-row {
+  display: table-row !important;
+}
+.detail-row td {
+  /* background-color: beige; */
+  padding: 6px !important;
+}
+
+ul.data-detail {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+ul.data-detail span {
+  display: inline-block;
+  min-width: 220px;
+  font-weight: 600;
+}
+
+.second {
+  width: 150px;
+  text-align: right;
+}
+
+ul.data-detail li {
+  padding: 6px;
+}
+ul.data-detail li.item-header {
+  font-weight: 600;
+  font-size: 18px;
+}
+.dropdown {
+  float: left;
+}
+
+.dropdown li {
+  /* display: block; */
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  /* white-space: nowrap; */
+  border-top: 1px solid #efefef;
+  cursor: pointer;
+}
+.dropdown li:first-child {
+  border-top: 0px solid #efefef;
+}
+.dropdown li:hover {
+  background-color: #efefef;
+}
+
+.font-18 {
+  font-size: 18px;
+}
+
+.tdof td {
+  font-weight: 600;
+  text-align: right;
+}
+
+.pointerE {
+  pointer-events: none;
+}
+.canceld {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+td {
+  padding: 10px;
+}
+
+.btn .caret {
+  margin-left: 6px;
+}
+
+.disabledSelect {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-body {
+  text-align: left;
+}
+
+.star {
+  position: absolute;
+  width: 38px;
+  left: -30px;
+  top: 0px;
+  right: 0px;
+}
+
+.orange {
+  color: orangered;
+}

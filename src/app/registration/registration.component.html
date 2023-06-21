@@ -1,0 +1,90 @@
+<div class="regis">
+    <div class="register-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center m-b-md">
+                    <h3>Registration</h3>
+                   
+                </div>
+                <div class="hpanel">
+                    <div class="panel-body">
+                        <form [formGroup]="registerForm" (ngSubmit)="onSubmit(OTP, template)">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                    <div *ngIf="f.email.errors.required">Email is required</div>
+                                    <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" formControlName="phone" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }" />
+                                <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                                    <div *ngIf="f.phone.errors.required">phone is required</div>
+                                    <div *ngIf="f.phone.errors.minlength">phone must be at least 10 characters</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-warning btn-full" [disabled]="registerForm.invalid">Register</button>
+                               
+                            </div>
+                        </form>
+
+                        <hr>
+                        <div class="small">
+                           Back to
+                            <label  (click)="gotoRegister()" class="text-decoration-underline color-primary">Login</label>
+                          </div> 
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <ng-template #OTP>
+            <div class="modal-header">
+              Enter  OTP
+            </div>
+            <div class="modal-body text-center">
+              
+              <div class="form-group">
+                <label>OTP</label>
+                <input type="text"  #otp class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                <div *ngIf="validOTP" class="invalid-feedback">
+                    <div>Please Enter valid OTP</div>
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning" (click)="confirmOTP(otp)">Submit</button>
+              <button type="button" class="btn btn-primary" (click)="decline()">Cancel</button>
+            </div>
+          </ng-template>
+    
+    
+          <ng-template #template>
+            <div class="modal-body text-center">
+              <p>{{alertText}}</p>
+              <button type="button" class="btn btn-warning" (click)="decline()" >Okey</button>
+            </div>
+          </ng-template>
+      
+    </div>
+
+</div>
+

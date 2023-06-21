@@ -1,0 +1,34 @@
+<span class="menu-header">
+  <div>{{boy.id}}</div>
+  <div>{{boy.first_name}}</div>
+  <div>{{boy.mobile}}</div>
+
+  <div>
+
+    <button class="btn  btn-sm" [ngClass]="boy.is_active == 1 ? 'btn-success' : 'btn-warning'"
+      (click)="isActive()">{{boy.is_active == 1 ? 'Active':'Inactive'}}</button>
+      <button  class="btn btn-sm btn-primary" (click)="Edit(boy)">Edit</button>
+    <button class="btn btn-sm btn-primary" (click)="isOpen = !isOpen">View Details</button>
+
+  </div>
+
+</span>
+
+<div *ngIf="isOpen">
+  <h3>Details:</h3>
+  <div>
+    <label>Aadhaar</label> {{boy.aadhaar}}
+  </div>
+  <div>
+    <label>Driving License</label> {{boy.driving_license}}
+  </div>
+  <div>
+    <label>Address</label> {{boy.delivery_boy_address}}
+  </div>
+  <div>
+    <label>Emergency No.</label> {{boy.emergency_phone_number}}
+  </div>
+
+
+
+</div>

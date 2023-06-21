@@ -1,0 +1,18 @@
+<div class="toolbar"  [ngClass]="{ 'admin': role=='ADMIN', 'op': role=='OPERATOR','ed': role=='EDITOR' }"  role="banner">
+    <img
+      width="40"
+      alt="Angular Logo"
+      src="../assets/images/apnaChotu.png"
+    />
+    <h4>Chota captain - {{role}}</h4>
+    <div class="spacer"></div>
+
+    <a class="nav-link nav-icon rounded-circle"  (click)="slideChange()">
+       <fa-icon [icon]="faSignOut"></fa-icon>
+    </a>
+
+
+      
+  </div>
+
+  

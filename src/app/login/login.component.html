@@ -1,0 +1,79 @@
+<div class="login-page">
+  <div class="container pt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-auto d-flex justify-content-center">
+        <div class="card card-style-1">
+          <div class="card-body p-4">
+            <!-- LOG IN FORM -->
+            <h4 class="card-title text-center mb-0">Welcome to Chota captain</h4>
+            <hr />
+
+            <form [formGroup]="registerForm" *ngIf="!isOTPScreen">
+              <div class="form-row">
+                <div class="form-group col-5">
+                  <label>Mobile</label>
+                  <input
+                    type="text"
+                    formControlName="firstName"
+                    class="form-control"
+                    placeholder="Enter Mobile No"
+                    maxlength="10"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.firstName.errors
+                    }"
+                  />
+                </div>
+                <div class="error-text" *ngIf="submitted && alertText">
+                  {{ alertText }}
+                </div>
+              </div>
+              <button
+                [disabled]="!registerForm.valid"
+                (click)="!isLoading && onSubmit(template)"
+                [ngClass]="
+                  isLoading
+                    ? 'btn btn-primary btn-block btn-Apna loading'
+                    : 'btn btn-primary btn-block btn-Apna'
+                "
+              >
+                Login
+              </button>
+            </form>
+
+            <form
+              [formGroup]="registerOTPForm"
+              (ngSubmit)="onSubmitOTP(template)"
+              *ngIf="isOTPScreen"
+            >
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>Enter Verification Code</label>
+                  <input
+                    type="password"
+                    maxlength="4"
+                    formControlName="password"
+                    maxlength="4"
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && h.password.errors }"
+                  />
+
+                  <div class="error-text" *ngIf="invalidPassword">
+                    {{ invalidPasswordText }}
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-block btn-Apna">Verify</button>
+            </form>
+
+            <hr />
+            <!-- <div class="small">
+                Don't have an account ?
+                <label (click)="gotoRegister()" class="text-decoration-underline">Register</label>
+              </div> 
+   -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

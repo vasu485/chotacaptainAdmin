@@ -1,0 +1,388 @@
+<div class="content-wrapper container">
+  <div class="panel">
+    <div class="panel-content">
+      <div class="panel-tag" *ngIf="selectedActivelink">
+        <h4>{{ message }}</h4>
+        ,
+        <small
+          >Open vendors: {{ openCount }}, Closed vendors: {{ closeCount }},
+          Total vendors: {{ totalCount }}</small
+        >
+      </div>
+      <div class="card border">
+        <div *ngIf="!displayItems">
+        <label>select location</label>
+        <select class="form-control loc-drop"  [(ngModel)]="location" (change)='selectLoc()'>
+          <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+        </select>
+        </div>
+        <div class="card-header1 " *ngIf="displayItems">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li
+              class="nav-item"
+              *ngFor="let item of menuItems"
+              (click)="gotoVendorList(item.id); selectedActivelink = item.id"
+            >
+              <a
+                class="nav-link"
+                [ngClass]="{ active: selectedActivelink == item.id }"
+                >{{ item.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="card-group" *ngIf="selectedActivelink">
+            <div class="card-header">Select Vendor</div>
+            <div class="card-body">
+              <div class="">
+                <div class="form-inline">
+                  <div class="form-group col-md-6">
+                    <label for="inputPassword2" class="sr-only"
+                      >Select Restaurant</label
+                    >
+                    <select
+                      class="restarant"
+                      [(ngModel)]="nrSelect"
+                      (change)="isViewItems = false"
+                    >
+                      <option class="hidden" selected="" disabled="">
+                        Select
+                      </option>
+                      <option
+                        *ngFor="let restraurant of restraurants"
+                        [value]="restraurant.id"
+                      >
+                        {{ restraurant.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <button
+                    class="btn btn-primary col-md-2"
+                    (click)="showItems(nrSelect)"
+                    [disabled]="!nrSelect"
+                  >
+                    Show Item List
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="isViewItems" class="extra-menu">
+                <h5>
+                  <div>Menu List</div>
+                  <div class="form-inline text-right">
+                    <button
+                      class="btn btn-primary m-4"
+                      (click)="opengroupModel(group, 'new')"
+                    >
+                      Create Item Group
+                    </button>
+                    <button
+                      class="btn btn-primary"
+                      (click)="openModel(template, 'new')"
+                    >
+                      Add Item
+                    </button>
+                  </div>
+                </h5>
+
+                <div *ngIf="selectedActivelink == 1"> 
+                  <input
+                    [(ngModel)]="terms"
+                    placeholder="Search Item"
+                    class="search-f"
+                  />
+                </div>
+
+                <table
+                  class="table table-bordered my-table"
+                  *ngIf="finalMenuList"
+                >
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Price/Quantity</th>
+                      <th>Type</th>
+                      <th>Active</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let list of finalMenuList">
+                    <tr class="tr">
+                      <td colspan="4" class="list-group">{{ list.group }}</td>
+                      <td>
+                        <button
+                          [ngClass]="
+                            list.is_active == 1 ? 'btn-success' : 'btn-warning'
+                          "
+                          class="btn btn-sm"
+                          (click)="groupInactive(list)"
+                        >
+                          {{ list.is_active == 1 ? "Active" : "Inactive" }}
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-danger btn-sm"
+                          (click)="opengroupModel(group, 'edit', list)"
+                        >
+                          <fa-icon [icon]="faEdit"></fa-icon> Edit Group
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      *ngFor="let listItems of list.items | search: terms:name"
+                    >
+
+                    <td>
+
+                      <div class="img-upload">
+                        <div class="img-container">
+                          <img
+                            *ngIf="listItems.image"
+                            class="img-responsive"
+                            [src]="listItems.image"
+                          />
+                          <label *ngIf="!listItems.image">No Image</label>
+                        </div>
+
+                        <form [formGroup]="form" (ngSubmit)="submit()">
+                          <div class="form-group">
+                            <input
+                              type="file"
+                              accept=".png, .jpg, .jpeg"
+                              (change)="uploadImage($event, listItems.id, listItems)"
+                            />
+                          </div>
+                          <div
+                            class="form-group"
+                            *ngIf="
+                              currentFileUpload && selectedId == listItems.id
+                            "
+                          >
+                            <button class="btn btn-success btn-sm">
+                              Upload/Change
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+
+
+                 
+                    </td>
+
+                      <td>{{ listItems.name }}</td>
+                      <td>
+                        {{ listItems.price > 0 ? listItems.price : "" }}
+
+                        <div *ngIf="listItems.price_quantity">
+                          <div
+                            class="divder-div"
+                            *ngFor="let price of listItems.price_quantity"
+                          >
+                            <label style="width: 50%"
+                              >{{ price.quantity }}
+                            </label>
+                            <label>= {{ price.price }}</label>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ listItems.type == "v" ? "Veg" : "Non Veg" }}</td>
+                      <td>
+                        <button
+                          class="btn btn-sm"
+                          [ngClass]="
+                            listItems.is_active == 1
+                              ? 'btn-success'
+                              : 'btn-warning'
+                          "
+                          (click)="isActiveItem((groupId = list), listItems)"
+                        >
+                          {{ listItems.is_active == 1 ? "Active" : "Inactive" }}
+                        </button>
+
+                        <!-- {{listItems.is_active == 1 ? 'Enabled':'Disabled'}} -->
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-danger btn-sm"
+                          (click)="
+                            openModel(
+                              template,
+                              'edit',
+                              (groupId = list),
+                              listItems
+                            )
+                          "
+                        >
+                          <fa-icon [icon]="faEdit"></fa-icon> Edit
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">Add/Edit Item</div>
+  <div class="modal-body">
+    <div class="">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="row register-form">
+            <div class="col-md-5">
+              <div class="form-group text-left">
+                <label>Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="name"
+                  class="form-control"
+                  placeholder="Name *"
+                  value=""
+                />
+              </div>
+              <div
+                class="form-group time text-left"
+                *ngIf="this.categoryId == 1"
+              >
+                <label>Price</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="price"
+                  placeholder="Price *"
+                  value=""
+                />
+              </div>
+
+              <div class="form-group time text-left">
+                <label>Type</label>
+                <select class="form-control" [(ngModel)]="itemType">
+                  <option *ngFor="let type of typeoption" [value]="type.name">
+                    {{ type.name == "v" ? "Veg" : "Non Veg" }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group text-left">
+                <label>Item Group</label>
+                <select [(ngModel)]="itemGroup" class="form-control">
+                  <option *ngFor="let type of itemGroupTypes" [value]="type.id">
+                    {{ type.name }} 
+                  </option>
+                </select>
+              </div>
+
+              <div class="checkbox">
+                <label
+                  ><input
+                    type="checkbox"
+                    [(ngModel)]="itemActive"
+                  />Active</label
+                >
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div
+                class="form-group time text-left"
+                *ngIf="this.categoryId != 1"
+              >
+                <label>Price & Quantity</label>
+                <price-quantity
+                  (notify)="receiveNotification($event)"
+                  [itemPrices]="priceQuantityEdit"
+                ></price-quantity>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      *ngIf="isView == 'new'"
+      (click)="createItemHandler()"
+      [disabled]="createDisabled()"
+    >
+      Create Item
+    </button>
+    <button
+      class="btn btn-success"
+      *ngIf="isView == 'edit'"
+      (click)="updateItemHandler()"
+    >
+      Update Item
+    </button>
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #group>
+  <div class="modal-header">Add/edit Item</div>
+  <div class="modal-body">
+    <div class="">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="row register-form">
+            <div class="col-md-12">
+              <div class="form-group text-left">
+                <label>Group Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="groupName"
+                  class="form-control"
+                  placeholder="Name *"
+                  value=""
+                />
+              </div>
+
+              <!-- <div class="checkbox">
+                    <label><input type="checkbox" [(ngModel)]='groupActive' >Active</label>
+                  </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      *ngIf="isViewgroup == 'new'"
+      (click)="createGroupItem()"
+      [disabled]="!groupName"
+    >
+      Create Group
+    </button>
+
+    <button
+      class="btn btn-success"
+      *ngIf="isViewgroup == 'edit'"
+      (click)="updateGroupItem()"
+    >
+      Update Group
+    </button>
+
+    <button type="button" class="btn btn-warning" (click)="decline()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

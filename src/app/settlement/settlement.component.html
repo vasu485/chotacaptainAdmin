@@ -1,0 +1,551 @@
+<div class="content-wrapper container">
+  <div class="card card-default">
+    <div class="card-header">
+      <ul class="nav nav-pills">
+        <li [ngClass]="isRes ? 'active' : ''">
+          <a
+            (click)="
+              isRes = true; isMisc = false; isBoy = false; getAllPartners()
+            "
+            >Partners
+          </a>
+        </li>
+        <li [ngClass]="isBoy ? 'active' : ''">
+          <a (click)="isBoy = true; isMisc = false; isRes = false; getBoys()"
+            >Delivery Boy</a
+          >
+        </li>
+
+        <!-- <li [ngClass]="isMisc ? 'active' : ''">
+          <a (click)="isMisc = true; isBoy = false; isRes = false"
+            >Misc Orders</a
+          >
+        </li> -->
+      </ul>
+    </div>
+
+    <div class="card-body" *ngIf="isRes">
+      <h4>Partners</h4>
+
+      <div class="form-inline">
+        <div class="form-group mb-2">
+          <select
+            class="restarant"
+            [(ngModel)]="selectVendorType"
+            (change)="isShow = false; isViewItems = false"
+            class="form-control select-box"
+          >
+            <option class="hidden" selected="" disabled="">Select</option>
+            <option *ngFor="let menuItem of menuItems" [value]="menuItem.id">
+              {{ menuItem.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div *ngIf="isAdmin">
+            <label>select location</label>
+            <select class="form-control loc-drop"  [(ngModel)]="location" (change)='selectLoc()'>
+              <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+            </select>
+            </div>
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary mb-2"
+          (click)="getrestarentsFn()"
+          [disabled]="!selectVendorType"
+        >
+          Show Vendor type
+        </button>
+      </div>
+      <hr *ngIf="isShow" />
+
+      <div *ngIf="isShow">
+        <div class="form-inline">
+          <div class="form-group col-md-3">
+            <label for="inputPassword2">Select Partner</label>
+            <select
+              class="restarant"
+              [(ngModel)]="nrSelect"
+              class="form-control"
+            >
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option
+                *ngFor="let restraurant of restraurants"
+                [hidden]="!restraurant.is_active"
+                [value]="restraurant.id"
+              >
+                {{ restraurant.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- <div class="form-group col-md-3">
+            <label for="inputPassword2" >Select Veg/Fruites Partner</label>
+            <select class="restarant" [(ngModel)]='nrSelect' class="form-control">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let restraurant of vetable" [hidden]="!restraurant.is_active" [value]="restraurant.id">{{restraurant.name}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-3">
+            <label for="inputPassword2" >Select Meat Partner</label>
+            <select class="restarant" [(ngModel)]='nrSelect' class="form-control">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let restraurant of meat" [hidden]="!restraurant.is_active" [value]="restraurant.id">{{restraurant.name}}
+              </option>
+            </select>
+          </div> -->
+
+          <!-- <div class="form-group col-md-3">
+            <label for="inputPassword2" >Start Date</label>
+            <input type="date" [(ngModel)]='srdate'  class="form-control">
+          </div> -->
+
+          <div class="form-group col-md-3">
+            <label for="inputPassword2">End Date</label>
+            <input type="date" [(ngModel)]="nrdate" class="form-control" />
+          </div>
+
+          <button
+            class="btn btn-success col-md-2"
+            style="margin-top: 24px"
+            (click)="showRestraurant(nrSelect, nrdate)"
+            [disabled]="!nrSelect || !nrdate"
+          >
+            View
+          </button>
+        </div>
+      </div>
+
+      <table
+        class="table table-bordered my-table"
+        *ngIf="restraurantsSettlementlength"
+      >
+        <thead>
+          <th>Order ID</th>
+          <th>Order Amount</th>
+          <th>Delivery Charge</th>
+          <th>Apna chotu Commision</th>
+          <th>Tip</th>
+          <th>Order Discount Amount</th>
+          <th>Status</th>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let orders of restraurantsSettlement.orders">
+            <td>{{ orders.id }}</td>
+            <td>{{ orders.itemsPrice }}</td>
+            <td>{{ orders.deliveryFee }}</td>
+            <td>{{ orders.apnachotu_commision }}</td>
+            <td>{{ orders.tip }}</td>
+            <td>-{{ orders.discountPrice }}</td>
+            <td>
+              {{
+                orders.status.name ==
+                "User Location Reached but not delivered to User"
+                  ? "Not Delivered"
+                  : orders.status.name
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table
+        class="table table-bordered my-table"
+        *ngIf="restraurantsSettlementlength"
+      >
+        <tbody>
+          <tr class="total">
+            <td>Total Orders Today</td>
+            <td>{{ restraurantsSettlement.orders.length }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Orders Amount</td>
+            <td>{{ restraurantsSettlement.settlements.totalOrdersPrice }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Items Amount</td>
+            <td>{{ restraurantsSettlement.settlements.itemsPrice }}</td>
+          </tr>
+          <!-- <tr class="total">
+            <td>Orders Discount Amount</td>
+            <td>- {{ restraurantsSettlement.settlements.discountPrice }}</td>
+          </tr> -->
+
+          <!-- <tr class="total">
+            <td>Vendor current percentage to Apna Chotu Amount</td>
+            <td>
+              {{ restraurantsSettlement.settlements.currentPercentageToChotu }}
+            </td>
+          </tr> -->
+
+          <tr class="total">
+            <td>Comission Amount</td>
+            <td>
+              {{ restraurantsSettlement.settlements.comission }}
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Tips Today</td>
+            <td>{{ restraurantsSettlement.settlements.tip }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Vendor Pay Amount</td>
+            <td>
+              <strong>
+                {{
+                  restraurantsSettlement.settlements.finalVendorAmount
+                }}</strong
+              >
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Payment Status</td>
+            <td>
+              <button
+                class="btn btn-sm m-4"
+                [ngClass]="
+                  restraurantsSettlement.settlementStatus == 'DONE'
+                    ? ' btn-success'
+                    : ' btn-warning'
+                "
+                (click)="
+                  updaterestraurantsSettlement(
+                    restraurantsSettlement.settlementId,
+                    nrSelect,
+                    nrdate
+                  )
+                "
+                [disabled]="
+                  restraurantsSettlement.settlementStatus == 'DONE' ||
+                  restraurantsSettlement.settlements.apnachotuTotalPrice == 0
+                "
+              >
+                {{ restraurantsSettlement.settlementStatus }}
+              </button>
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Bussiness Amount on Orders</td>
+            <td>
+              <strong>{{
+                (
+                  restraurantsSettlement.settlements.apnachotuProfit -
+                  restraurantsSettlement.settlements.deliveryFee
+                ).toFixed(1)
+              }}</strong>
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Orders Delivery Charges</td>
+            <td>
+              <strong>{{
+                restraurantsSettlement.settlements.deliveryFee
+              }}</strong>
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Bussiness Amount</td>
+            <td>
+              <strong>{{
+                restraurantsSettlement.settlements.apnachotuProfit
+              }}</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-body" *ngIf="isBoy">
+      <h4>Delivery Boy</h4>
+
+      <div class="">
+        <div class="form-inline">
+          <div class="form-group col-md-3">
+            <label for="inputPassword2">Select Boy</label>
+            <select
+              class="restarant"
+              [(ngModel)]="selectBoy"
+              class="form-control"
+            >
+              <option class="hidden">Select</option>
+              <option *ngFor="let boys of boysArr" [value]="boys.id">
+                {{ boys.first_name }}
+                <span *ngIf="boys.is_active == 0" class="badge badge-primary"
+                  >[Inactive]</span
+                >
+              </option>
+            </select>
+          </div>
+          <div *ngIf="isAdmin">
+            <label>select location</label>
+            <select class="form-control loc-drop"  [(ngModel)]="location" (change)='selectLoc()'>
+              <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+            </select>
+            </div>
+
+          <div class="form-group col-md-3">
+            <label for="inputPassword2">Start Date</label>
+            <input type="date" [(ngModel)]="selectDate" class="form-control" />
+          </div>
+
+          <div class="form-group col-md-3">
+            <label for="inputPassword2">End Date</label>
+            <input
+              type="date"
+              [(ngModel)]="selectEndDate"
+              class="form-control"
+            />
+          </div>
+
+          <button
+            class="btn btn-success col-md-2"
+            style="margin-top: 24px"
+            (click)="showBoys(selectBoy, selectDate, selectEndDate)"
+            [disabled]="!selectBoy || !selectDate"
+          >
+            View
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-bordered my-table" *ngIf="boySettlementlength">
+        <thead>
+          <th>Order ID</th>
+          <th>Vendor</th>
+          <th>Order Amount</th>
+          <th>Delivery Charge</th>
+          <th>Tip</th>
+          <th>Order Discount Amount</th>
+          <th>Customer Paid Amount</th>
+          <th>Status</th>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let orders of boysSettlement.orders">
+            <td>{{ orders.id }}</td>
+            <td>{{ orders.vendor ? orders.vendor.name : "Misc" }}</td>
+
+            <td>{{ orders.itemsPrice }}</td>
+            <td>{{ orders.deliveryFee }}</td>
+            <td>{{ orders.tip }}</td>
+            <td>- {{ orders.discountPrice }}</td>
+            <td>{{ orders.finalPrice }}</td>
+            <td>
+              {{
+                orders.status.name ==
+                "User Location Reached but not delivered to User"
+                  ? "Not Delivered"
+                  : orders.status.name
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="table table-bordered my-table" *ngIf="boySettlementlength">
+        <tbody>
+          <tr class="total">
+            <td>Total Orders Today</td>
+            <td>{{ boysSettlement.orders.length }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Order Amount</td>
+            <td>{{ boysSettlement.settlements.TotalOrdersAmount }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Vehicle Fuel Amount</td>
+            <td>{{ boysSettlement.settlements.boyBikePertolAmount }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Final Settlement Amount</td>
+            <td>{{ boysSettlement.settlements.boyFinalSettlementAmount }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Orders Settlement Amount</td>
+            <td>{{ boysSettlement.settlements.boyOrdersSettlementAmount }}</td>
+          </tr>
+
+
+          <tr class="total">
+            <td>Cash Orders Amount</td>
+            <td>{{ boysSettlement.settlements.cashOrdersAmount }}</td>
+          </tr>
+
+         
+
+          <tr class="total">
+            <td>Online Orders Amount</td>
+            <td>{{ boysSettlement.settlements.onlineOrdersAmount }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Boy Commision Amount</td>
+            <td>{{ boysSettlement.settlements.totalBoyCommision }}</td>
+          </tr>
+
+
+          <tr class="total">
+            <td>Total Tip Amount</td>
+            <td>{{ boysSettlement.settlements.totalTip }}</td>
+          </tr>
+
+
+          <tr class="total">
+            <td>Final Pay Amount to Apnachotu</td>
+            <td>{{ boysSettlement.settlements.finalPayAmountToApnachotu }}</td>
+          </tr>
+
+
+
+          <!-- <tr class="total">
+            <td>Orders Delivery Charges</td>
+            <td>{{ boysSettlement.settlements.apnachotuDeliveryPrice }}</td>
+          </tr>
+
+        
+
+          <tr class="total">
+            <td>Orders Discount Amount</td>
+            <td>
+              -{{ boysSettlement.settlements.apnachotuTotalDiscountPrice }}
+            </td>
+          </tr>
+
+          <tr class="total">
+            <td>Boy Bussiness Amount</td>
+            <td>
+              <strong>{{
+                boysSettlement.settlements.vendorSattlementPrice +
+                  boysSettlement.settlements.apnachotuDeliveryPrice -
+                  boysSettlement.settlements.apnachotuTotalDiscountPrice
+              }}</strong>
+            </td>
+          </tr> -->
+
+          <tr class="total">
+            <td>Make Payment</td>
+            <td>
+              <button
+                class="btn btn-sm m-4"
+                [ngClass]="
+                  boysSettlement.settlementStatus == 'DONE'
+                    ? ' btn-success'
+                    : ' btn-warning'
+                "
+                (click)="
+                  updateBoySettlement(
+                    boysSettlement.settlementId,
+                    boysSettlement.settlements.vendorSattlementPrice +
+                      boysSettlement.settlements.apnachotuDeliveryPrice -
+                      boysSettlement.settlements.apnachotuTotalDiscountPrice
+                  )
+                "
+                [disabled]="
+                  boysSettlement.settlementStatus == 'DONE' ||
+                  boysSettlement.settlements.apnachotuTotalPrice == 0
+                "
+              >
+                {{ boysSettlement.settlementStatus }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-body" *ngIf="isMisc">
+      <h4>Misc</h4>
+
+      <div class="">
+        <div class="form-inline">
+          <!-- <div class="form-group col-md-3">
+            <label for="inputPassword2" class="sr-only">Start Date</label>
+            <input type="date" [(ngModel)]='srdate'  class="form-control">
+          </div> -->
+
+          <div class="form-group col-md-3">
+            <label for="inputPassword2" class="sr-only">End Date</label>
+            <input type="date" [(ngModel)]="nrdate" class="form-control" />
+          </div>
+
+          <button
+            class="btn btn-success col-md-2"
+            (click)="showMisc(nrdate)"
+            [disabled]="!nrdate"
+          >
+            View
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-bordered my-table">
+        <thead>
+          <th>Order ID</th>
+          <th>Order Amount</th>
+          <th>Delivery Charge</th>
+          <th>Order Items</th>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let orders of miscSettlement && miscSettlement.orders">
+            <td>{{ orders.id }}</td>
+
+            <td>{{ orders.itemsPrice }}</td>
+            <td>{{ orders.deliveryFee }}</td>
+            <td>{{ orders.items_data }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="table table-bordered my-table" *ngIf="miscSettlement">
+        <tbody>
+          <tr class="total">
+            <td>Total Orders Today</td>
+            <td>{{ miscSettlement.orders?.length }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Total Orders Amount</td>
+            <td>{{ miscSettlement.settlements?.vendorSattlementPrice }}</td>
+          </tr>
+
+          <tr class="total">
+            <td>Orders Delivery Charges</td>
+            <td>{{ miscSettlement.settlements?.apnachotuDeliveryPrice }}</td>
+          </tr>
+
+          <!-- <tr class="total">
+                <td>Settelement</td>
+                <td>
+                  <button class="btn btn-sm m-4" [ngClass]="miscSettlement.settlementStatus == 'DONE' ? ' btn-success':' btn-warning'" 
+                  (click)="updaterestraurantsSettlement(restraurantsSettlement.settlementId, nrSelect, nrdate);" 
+                  [disabled]="miscSettlement.settlementStatus == 'DONE' || miscSettlement.settlements.apnachotuTotalPrice == 0">
+                  {{miscSettlement.settlementStatus}}</button>
+                </td>
+              </tr> -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="loader-backdrop" *ngIf="isLoadMoreBtn">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

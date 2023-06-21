@@ -1,0 +1,83 @@
+<div class="content-wrapper container">
+
+    <div class="card card-default" >
+      <div class="card-header"> Locations
+      </div>
+  
+      <div class="card-body ">
+  
+        <button class="btn btn-primary btn-sm"  (click)="isEdit('','')">Create</button>
+        <table class="table table-stripped" *ngIf="locationArr.length>0"> 
+          <thead>
+  
+            <tr>
+              <td>ID</td>
+              <td>Name</td>
+              <td>Mobile</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let location of locationArr; let index = index">
+              <td>{{location.id}}</td>
+              <td>{{location.first_name}}</td>
+              <td>{{location.mobile}}</td>
+
+
+            </tr>
+            <td>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal-backdrop" *ngIf="openModel"></div>
+  <div class="modal fade in" *ngIf="openModel">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabel"> Create Location</h4>
+              </div>
+              <div class="modal-body">
+  
+                <table class="table table-stripped">
+           
+                  <tbody>
+                    <tr>
+                        <td>Fisrt name</td>
+                      <td><input class="form-control" type="text" [(ngModel)]="name" /></td>
+                      
+                    </tr>
+                    <tr>
+                        <td>Last name</td>
+                      <td><input class="form-control" type="text" [(ngModel)]="lname" /></td>
+                      
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                      <td><input class="form-control" type="tel" [(ngModel)]="mobile" /></td>
+                      
+                    </tr>
+                    <tr>
+                      <td>Location</td>
+                    <td><select class="form-control" [(ngModel)]="location">
+                      <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+                    </select></td>
+                    
+                  </tr>
+                    <tr>
+                                               <td> <button class="btn btn-primary btn-sm"  (click)="isUpdate()">Create</button></td> 
+                      <td></td>
+                    </tr>
+                    <td>
+                  </tbody>
+                </table>
+  
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" (click)="closeFn()">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>

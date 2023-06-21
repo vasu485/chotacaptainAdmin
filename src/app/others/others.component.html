@@ -1,0 +1,212 @@
+<div class="content-wrapper container">
+  <div class="card card-default">
+    <div class="card-body">
+      <ul class="nav nav-pills">
+
+        <li *ngFor="let menus of mainMenuItems; let i = index" [ngClass]="isIndex == i ? 'active' : ''"
+          (click)="isIndex = i; clickHandler(i)">
+          <a>{{menus.name}}</a>
+        </li>
+        <!-- 
+        <li [ngClass]="isIndex == 0 ? 'active' : ''" (click)="isIndex = 0">
+          <a>Get Reports </a>
+        </li>
+        <li [ngClass]="isIndex == 1 ? 'active' : ''" (click)="isIndex = 1">
+          <a>Change Roles</a>
+        </li>
+
+        <li [ngClass]="isIndex == 2 ? 'active' : ''" (click)="isIndex = 2">
+          <a>Add Subscriber</a>
+        </li>
+
+        <li [ngClass]="isIndex == 3 ? 'active' : ''" (click)="isIndex = 3">
+          <a>Group Notifications</a>
+        </li>
+
+        <li [ngClass]="isIndex == 4 ? 'active' : ''" (click)="this.getTaxesFn(); isIndex = 4">
+          <a>Taxes & Terms</a>
+        </li> -->
+      </ul>
+
+      <div *ngIf="isIndex == 0">
+        <div class="form-group col-md-3">
+          <label for="inputPassword2">Select Date</label>
+          <input type="date" [(ngModel)]="nrdate" class="form-control" />
+        </div>
+        <button class="btn btn-success col-md-2" style="margin-top: 24px" [disabled]="!nrdate"
+          (click)="getReportsFn(nrdate)">
+          Download Report
+        </button>
+      </div>
+
+      <div *ngIf="isIndex == 1" class="col-lg-5">
+        <form name="form" [formGroup]="form" (ngSubmit)="form.valid && onSubmit()">
+          <div class="form-group">
+            <label for="email">Enter Mobile</label>
+            <input type="text" maxlength="10" onKeyPress="if(this.value.length==10) return false;" class="form-control"
+              formControlName="firstName" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Enter Email</label>
+            <input type="email" class="form-control" formControlName="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Select Role</label>
+            <select class="restarant" formControlName="role">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let menuItem of menuItems" [value]="menuItem.value">
+                {{ menuItem.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="radio">
+              <label><input type="radio" formControlName="status" value="1" />
+                Active</label>
+            </div>
+            <div class="radio">
+              <label><input type="radio" formControlName="status" value="0" />
+                Inactive</label>
+            </div>
+            <div class="radio">
+              <label><input type="radio" formControlName="status" value="2" />
+                Block</label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" [disabled]="!form.valid">
+            Register
+          </button>
+        </form>
+      </div>
+
+      <!-- prime_category -->
+
+      <div *ngIf="isIndex == 2">
+        <form name="form" [formGroup]="formSubscribe" (ngSubmit)="formSubscribe.valid && onSubmitFormSubscribe()">
+          <div class="form-group">
+            <label for="email">Enter Mobile</label>
+            <input type="text" maxlength="10" onKeyPress="if(this.value.length==10) return false;" class="form-control"
+              formControlName="mobile" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Select Type</label>
+            <select class="restarant" formControlName="prime_category">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let menuItem of subscribeTypes" [value]="menuItem.value">
+                {{ menuItem.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="formSubscribe.get('prime_category').value != 0">
+            <label for="email">Select Duration{{
+              formSubscribe.get("prime_category").value
+              }}</label>
+            <select class="restarant" formControlName="months"
+              [disabled]="formSubscribe.get('prime_category').value == 0">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let menuItem of durations" [value]="menuItem.value">
+                {{ menuItem.name }}
+              </option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" [disabled]="!formSubscribe.valid">
+            Register
+          </button>
+        </form>
+      </div>
+
+      <!-- Notifications -->
+
+      <div *ngIf="isIndex == 3">
+        <form name="form2" [formGroup]="formNotifications"
+          (ngSubmit)="formNotifications.valid && onSubmitformNotifications()">
+          <div class="form-group">
+            <label for="email">Enter Title</label>
+            <input type="text" class="form-control" formControlName="title" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Enter Message</label>
+            <textarea rows="6" class="form-control" formControlName="message"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Select User Type</label>
+            <select class="restarant" formControlName="selectUser">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let menuItem of selectUsers" [value]="menuItem.value">
+                {{ menuItem.name }}
+              </option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" [disabled]="!formNotifications.valid">
+            Send
+          </button>
+        </form>
+      </div>
+
+      <!-- terms -->
+      <div *ngIf="isIndex == 4">
+        <form name="taxes" [formGroup]="formtaxes" (ngSubmit)="formtaxes.valid && onSubmitformtaxes()">
+          <!-- <div class="form-group">
+            <label for="email">Service Tax %</label>
+            <input type="number" class="form-control" formControlName="tax" />
+          </div> -->
+          <div class="form-group">
+            <label for="email">GST Tax %</label>
+            <input type="number" class="form-control" formControlName="gstTax" />
+          </div>
+          <div class="form-group">
+            <label for="email">Enter Title</label>
+            <textarea rows="3" class="form-control" formControlName="title"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Enter Description</label>
+            <textarea rows="6" class="form-control" formControlName="description"></textarea>
+          </div>
+
+          <button class="btn btn-primary" [disabled]="!formtaxes.valid">
+            Submit
+          </button>
+        </form>
+      </div>
+
+
+      <!-- Payment -->
+
+      <div *ngIf="isIndex == 5">
+        <form name="form2" [formGroup]="formPaymentMethods"
+          (ngSubmit)="formPaymentMethods.valid && onSubmitformPaymentMethods()">
+
+          <div class="form-group" style="width: 270px;">
+            <label for="email">Select Type</label>
+            <select class="restarant" formControlName="selectPayment">
+              <option class="hidden" selected="" disabled="">Select</option>
+              <option *ngFor="let paymentMethod of paymentMethods" [value]="paymentMethod.value">
+                {{ paymentMethod.name }}
+              </option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" [disabled]="!formPaymentMethods.valid">
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

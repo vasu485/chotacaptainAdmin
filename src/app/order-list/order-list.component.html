@@ -1,0 +1,557 @@
+<tr>
+  <td>
+    <strong>#{{ orderList.id }}</strong>
+  </td>
+  <td>
+    <div class="types">
+      <div
+        class="order-type"
+        *ngIf="orderList.vendor?.categoryId == 1 || orderList?.categoryId == 1"
+      >
+        Food Orders
+      </div>
+      <div
+        class="order-type"
+        *ngIf="
+          orderList.vendor?.categoryId == 21 || orderList?.categoryId == 21
+        "
+      >
+        Vegtables/Fruites/Dairy Orders
+      </div>
+      <div
+        class="order-type"
+        *ngIf="
+          orderList.vendor?.categoryId == 20 || orderList?.categoryId == 20
+        "
+      >
+        Meat/Fish Orders
+      </div>
+      <div
+        class="order-type"
+        *ngIf="
+          orderList.vendor?.categoryId == 18 || orderList?.categoryId == 18
+        "
+      >
+        Grocery Orders
+      </div>
+      <div
+        class="card-vendor"
+        [ngClass]="{
+          'misc-order': !orderList.vendor,
+          'food-vendor ':
+            orderList.vendor?.categoryId == 1 || orderList?.categoryId == 1,
+          'veg-vendor ':
+            orderList.vendor?.categoryId == 21 || orderList?.categoryId == 21,
+          'meat-vendor ':
+            orderList.vendor?.categoryId == 20 || orderList?.categoryId == 20,
+          'grocery-vendor ':
+            orderList.vendor?.categoryId == 18 || orderList?.categoryId == 18
+        }"
+      >
+        {{
+          orderList.vendor
+            ? orderList.vendor.name
+            : orderList.preferredTime
+            ? "Appliance Repair "
+            : "Misc "
+        }}
+      </div>
+    </div>
+  </td>
+
+  <!-- [ngClass]="orderList.vendor ? '':'misc-order'" -->
+  <td
+    class="text-center font-18"
+    (click)="orderListOpenFn(orderList.id, orderList); isOpen = !isOpen"
+  >
+    <div class="badgepill">
+      <!-- <i class="fa fa-plus" aria-hidden="true"></i> -->
+      <fa-icon [icon]="isOpen ? faMinus : faPlus"></fa-icon>
+    </div>
+  </td>
+  <td>{{ orderList.finalPrice }}</td>
+  <!-- <td>{{ orderList.paymentMode }}</td> -->
+  <td style="width: 150px">
+    <span
+      class="badge badge-pill badge-placed"
+      [ngClass]="{
+        'badge-placed': orderList.status.id == 1,
+        'badge-confirmed ': orderList.status.id == 2,
+        'badge-unavailable': orderList.status.id == 3,
+        'badge-delivered': orderList.status.id == 4,
+        'badge-ontheway': orderList.status.id == 5,
+        'badge-cooking': orderList.status.id == 6,
+        'badge-payment': orderList.status.id == 7,
+        'badge-prepared': orderList.status.id == 8
+      }"
+      >{{ orderList.status.name }}</span
+    >
+    <div
+      *ngIf="
+        orderList.delivery_time &&
+        (orderList.status.id == 2 || orderList.status.id == 6)
+      "
+    >
+      <strong style="display: block">Preparation Time</strong>
+      {{ orderList.delivery_time }} min
+    </div>
+    <div *ngIf="orderList.cancel_reason">
+      <strong style="display: block">Cancel Reason</strong>
+      {{ orderList.cancel_reason }}
+    </div>
+  </td>
+
+  <td
+    style="position: relative"
+    [ngClass]="{
+      orangeq:
+        orderList.categoryId != 1 &&
+        orderList.deliveryFee == 0 &&
+        orderList?.order_by.prime_customer != 0
+    }"
+  >
+    <strong
+      *ngIf="
+        orderList.categoryId == 1 &&
+        orderList.deliveryFee == 0 &&
+        orderList?.order_by.prime_customer != 0
+      "
+      style="color: orangered"
+      >[Subscribed to FOODIE]</strong
+    >
+    <strong
+      *ngIf="
+        orderList.categoryId != 1 &&
+        orderList.deliveryFee == 0 &&
+        orderList?.order_by.prime_customer != 0
+      "
+      style="color: orangered"
+      >[Subscribed to SUPREME]</strong
+    >
+
+    <img
+      *ngIf="
+        orderList.categoryId == 1 &&
+        orderList.deliveryFee == 0 &&
+        orderList?.order_by.prime_customer != 0
+      "
+      class="star"
+      src="data:image/png;base64,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"
+    />
+
+    <img
+      *ngIf="
+        orderList.categoryId != 1 &&
+        orderList.deliveryFee == 0 &&
+        orderList?.order_by.prime_customer != 0
+      "
+      class="star"
+      src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaWQ9Ikljb25zIiB2aWV3Qm94PSIwIDAgNDggNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHN0eWxlPi5jbHMtMSwuY2xzLTR7ZmlsbDojNDU0MTNjO30uY2xzLTF7b3BhY2l0eTowLjE1O30uY2xzLTJ7ZmlsbDojNzI0ZjNkO30uY2xzLTExLC5jbHMtMiwuY2xzLTMsLmNscy00LC5jbHMtN3tzdHJva2U6IzQ1NDEzYztzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7fS5jbHMtMTIsLmNscy0ze2ZpbGw6I2ZmZTUwMDt9LmNscy01e2ZpbGw6I2ZmNjI0Mjt9LmNscy02e2ZpbGw6I2ZmYTY5NDt9LmNscy03e2ZpbGw6bm9uZTt9LmNscy04e2ZpbGw6I2ZmYWE1NDt9LmNscy05e2ZpbGw6IzAwZGJhODt9LmNscy0xMHtmaWxsOiMwMGY1YmM7fS5jbHMtMTF7ZmlsbDojZmY4N2FmO30uY2xzLTEze2ZpbGw6I2ZmZjQ4Yzt9PC9zdHlsZT48L2RlZnM+PHRpdGxlLz48ZWxsaXBzZSBjbGFzcz0iY2xzLTEiIGN4PSIyNCIgY3k9IjQ1LjUiIGRhdGEtbmFtZT0iJmx0O0VsbGlwc2UmZ3Q7IiBpZD0iX0VsbGlwc2VfIiByeD0iMTIuNSIgcnk9IjEuNSIvPjxnIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyIgaWQ9Il9Hcm91cF8iPjxnIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyIgaWQ9Il9Hcm91cF8yIj48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yNCw3Ljc2QTE0LjU5LDE0LjU5LDAsMCwwLDkuNDEsMjIuMzVWMzBIMzguNTlWMjIuMzVBMTQuNTksMTQuNTksMCwwLDAsMjQsNy43NloiLz48cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik00MC4xNSwyOC44OGEyLjczLDIuNzMsMCwwLDAtMi4wNy0yLjNsLS44Ny0uMjRBMywzLDAsMCwxLDM1LDIzLjQxVjIwLjM0YTIuNzcsMi43NywwLDAsMC0yLjA4LTIuNjhBMjMsMjMsMCwwLDEsMjQsMTkuMjdhMjMsMjMsMCwwLDEtOC45LTEuNjFBMi43NywyLjc3LDAsMCwwLDEzLDIwLjM0djMuMDdhMywzLDAsMCwxLTIuMjMsMi45M2wtLjg3LjI0YTIuNzMsMi43MywwLDAsMC0yLjA3LDIuMywyLjY5LDIuNjksMCwwLDAsMi42OCwyLjkyaC4xN2ExMy40NSwxMy40NSwwLDAsMCwyNi42LDBoLjE3QTIuNjksMi42OSwwLDAsMCw0MC4xNSwyOC44OFoiLz48cGF0aCBjbGFzcz0iY2xzLTQiIGQ9Ik0xNS45MywyOC41NmExLjE1LDEuMTUsMCwxLDAsMS4xNC0xLjE1QTEuMTUsMS4xNSwwLDAsMCwxNS45MywyOC41NloiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBpZD0iX1BhdGhfIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNMzIuMDcsMjguNTZhMS4xNSwxLjE1LDAsMSwxLTEuMTQtMS4xNUExLjE1LDEuMTUsMCwwLDEsMzIuMDcsMjguNTZaIiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzIiLz48ZyBkYXRhLW5hbWU9IiZsdDtHcm91cCZndDsiIGlkPSJfR3JvdXBfMyI+PGcgZGF0YS1uYW1lPSImbHQ7R3JvdXAmZ3Q7IiBpZD0iX0dyb3VwXzQiPjxwYXRoIGNsYXNzPSJjbHMtNSIgZD0iTTIwLjMxLDM1Ljg0YS42MS42MSwwLDAsMC0uNDQuMi41Ny41NywwLDAsMC0uMTMuNDcsNC4zMiw0LjMyLDAsMCwwLDguNTIsMCwuNTcuNTcsMCwwLDAtLjEzLS40Ny42MS42MSwwLDAsMC0uNDQtLjJaIiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzMiLz48cGF0aCBjbGFzcz0iY2xzLTYiIGQ9Ik0yNCwzNy42MmE1LjMsNS4zLDAsMCwwLTMuMjksMSw0LjM4LDQuMzgsMCwwLDAsNi41OCwwQTUuMyw1LjMsMCwwLDAsMjQsMzcuNjJaIiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzQiLz48L2c+PC9nPjxnIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyIgaWQ9Il9Hcm91cF81Ij48cGF0aCBjbGFzcz0iY2xzLTciIGQ9Ik0yMC4zMSwzNS44NGEuNjEuNjEsMCwwLDAtLjQ0LjIuNTcuNTcsMCwwLDAtLjEzLjQ3LDQuMzIsNC4zMiwwLDAsMCw4LjUyLDAsLjU3LjU3LDAsMCwwLS4xMy0uNDcuNjEuNjEsMCwwLDAtLjQ0LS4yWiIgZGF0YS1uYW1lPSImbHQ7UGF0aCZndDsiIGlkPSJfUGF0aF81Ii8+PC9nPjxlbGxpcHNlIGNsYXNzPSJjbHMtOCIgY3g9IjE1LjE4IiBjeT0iMzMuNDQiIGRhdGEtbmFtZT0iJmx0O0VsbGlwc2UmZ3Q7IiBpZD0iX0VsbGlwc2VfMiIgcng9IjEuNDkiIHJ5PSIwLjg5Ii8+PGVsbGlwc2UgY2xhc3M9ImNscy04IiBjeD0iMzIuODIiIGN5PSIzMy40NCIgZGF0YS1uYW1lPSImbHQ7RWxsaXBzZSZndDsiIGlkPSJfRWxsaXBzZV8zIiByeD0iMS40OSIgcnk9IjAuODkiLz48L2c+PC9nPjxnIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyIgaWQ9Il9Hcm91cF82Ij48cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik0zOC45MiwxMS45M2EyLjE4LDIuMTgsMCwwLDEtNC0uNTVMMzMuODEsN2wtMi4xNCwzLjUzYTIuOCwyLjgsMCwwLDEtNS0uNTJMMjQsMi40OCwyMS4zNiwxMGEyLjgsMi44LDAsMCwxLTUsLjUyTDE0LjE5LDcsMTMuMSwxMS4zOGEyLjE4LDIuMTgsMCwwLDEtNCwuNTVMOC41NiwxMWwuNTUsOS40OEgzOC44OUwzOS40NCwxMVoiLz48L2c+PGNpcmNsZSBjbGFzcz0iY2xzLTMiIGN4PSIxNC4xNiIgY3k9IjYuNDIiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBpZD0iX1BhdGhfNiIgcj0iMS4xOSIvPjxjaXJjbGUgY2xhc3M9ImNscy0zIiBjeD0iMzMuODQiIGN5PSI2LjQyIiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzciIHI9IjEuMTkiLz48Y2lyY2xlIGNsYXNzPSJjbHMtMyIgY3g9IjguNzMiIGN5PSIxMS4yOSIgZGF0YS1uYW1lPSImbHQ7UGF0aCZndDsiIGlkPSJfUGF0aF84IiByPSIxIi8+PGNpcmNsZSBjbGFzcz0iY2xzLTMiIGN4PSIzOS4yNyIgY3k9IjExLjI5IiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzkiIHI9IjEiLz48ZWxsaXBzZSBjbGFzcz0iY2xzLTkiIGN4PSIyNCIgY3k9IjEzLjI3IiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzEwIiByeD0iMS41NiIgcnk9IjIuMjIiLz48cGF0aCBjbGFzcz0iY2xzLTEwIiBkPSJNMjQsMTIuODJhMS42NSwxLjY1LDAsMCwxLDEuNDMsMS4zMywzLjEyLDMuMTIsMCwwLDAsLjEzLS44OGMwLTEuMjMtLjctMi4yMi0xLjU2LTIuMjJzLTEuNTYsMS0xLjU2LDIuMjJhMy4xMiwzLjEyLDAsMCwwLC4xMy44OEExLjY1LDEuNjUsMCwwLDEsMjQsMTIuODJaIiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzExIi8+PGVsbGlwc2UgY2xhc3M9ImNscy03IiBjeD0iMjQiIGN5PSIxMy4yNyIgZGF0YS1uYW1lPSImbHQ7UGF0aCZndDsiIGlkPSJfUGF0aF8xMiIgcng9IjEuNTYiIHJ5PSIyLjIyIi8+PGNpcmNsZSBjbGFzcz0iY2xzLTMiIGN4PSIyNCIgY3k9IjIiIHI9IjEuNSIvPjxjaXJjbGUgY2xhc3M9ImNscy0xMSIgY3g9IjE1LjI1IiBjeT0iMTQuNDYiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBpZD0iX1BhdGhfMTMiIHI9IjEuMTkiLz48Y2lyY2xlIGNsYXNzPSJjbHMtMTEiIGN4PSIzMi43NSIgY3k9IjE0LjQ2IiBkYXRhLW5hbWU9IiZsdDtQYXRoJmd0OyIgaWQ9Il9QYXRoXzE0IiByPSIxLjE5Ii8+PHBhdGggY2xhc3M9ImNscy0xMiIgZD0iTTM4LjksMjAuNTFjMC0xLjg2LTYuNjctMy4zOC0xNC45LTMuMzhTOS4xLDE4LjY1LDkuMSwyMC41MXYzLjM3YzAtMS44Niw2LjY3LTMuMzcsMTQuOS0zLjM3UzM4LjksMjIsMzguOSwyMy44OFoiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBpZD0iX1BhdGhfMTUiLz48cGF0aCBjbGFzcz0iY2xzLTEzIiBkPSJNMjQsMTcuMTNjLTguMjMsMC0xNC45LDEuNTItMTQuOSwzLjM4djEuNjJjMC0xLjg2LDYuNjctMy4zNywxNC45LTMuMzdzMTQuOSwxLjUxLDE0LjksMy4zN1YyMC41MUMzOC45LDE4LjY1LDMyLjIzLDE3LjEzLDI0LDE3LjEzWiIgZGF0YS1uYW1lPSImbHQ7UGF0aCZndDsiIGlkPSJfUGF0aF8xNiIvPjxwYXRoIGNsYXNzPSJjbHMtNyIgZD0iTTM4LjksMjAuNTFjMC0xLjg2LTYuNjctMy4zOC0xNC45LTMuMzhTOS4xLDE4LjY1LDkuMSwyMC41MXYzLjM3YzAtMS44Niw2LjY3LTMuMzcsMTQuOS0zLjM3UzM4LjksMjIsMzguOSwyMy44OFoiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBpZD0iX1BhdGhfMTciLz48L3N2Zz4="
+    />
+
+    <p *ngIf="orderList.order_by.prime_customer == 0" style="margin: 0 0 4px">
+      <strong style="display: block">Address</strong>
+    </p>
+
+    <p style="width: 200px" *ngIf="orderList.address">
+      {{ orderList.address }}
+    </p>
+    <p style="margin: 0 0 4px">
+      <strong style="display: block">Location</strong
+      >{{ orderList.location.name }}
+    </p>
+    <p style="margin: 0 0 4px">
+      <strong style="display: block">Mobile</strong
+      >{{ orderList.order_by.mobile }}
+    </p>
+    <p *ngIf="orderList.alt_mobile">
+      <strong style="display: block">Alternate Mobile</strong
+      >{{ orderList.alt_mobile }}
+    </p>
+  </td>
+  <td>
+    <span *ngIf="orderList.deliveryBoy">
+      <div
+        *ngFor="let boys of deliveryBoys"
+        [hidden]="boys.id != orderList.deliveryBoy.id"
+      >
+        <p style="margin: 0 0 4px">
+          <strong style="display: block">Name </strong>{{ boys.first_name }}
+        </p>
+        <p style="margin: 0 0 4px">
+          <strong style="display: block">Mobile</strong>{{ boys.mobile }}
+        </p>
+      </div>
+    </span>
+{{orderList.status.id}}
+    <div class="btn-group dropdown" dropdown *ngIf="showBoy(orderList)">
+      <button
+        dropdownToggle
+        type="button"
+        class="btn btn-xs btn-primary dropdown-toggle"
+        aria-controls="dropdown-basic"
+      >
+        {{ chotu_name }}<span class="caret"></span>
+      </button>
+
+      <ul
+        id="dropdown-basic"
+        *dropdownMenu
+        class="dropdown-menu dropdown-menu-right custom-dropdown"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li
+          *ngFor="let boys of deliveryBoys"
+          [hidden]="boys.is_active == 0"
+          (click)="
+            openModal(template, boys.id, boys.first_name, orderList.id, boys)
+          "
+        >
+          {{ boys.id }}-{{ boys.first_name }}
+        </li>
+      </ul>
+    </div>
+  </td>
+  <td>
+    <p style="margin: 0 0 4px">
+      <strong style="display: block">Order Placed on:</strong>
+      {{ orderList.createdOn | date: "dd-MM-yyyy h:mm:ss a" }}
+    </p>
+    <p *ngIf="orderList.updatedOn">
+      <strong style="display: block">{{ orderList.status.name }} on:</strong>
+      {{ orderList.updatedOn | date: "dd-MM-yyyy h:mm:ss a" }}
+    </p>
+
+    <button class="badge badge-unavailable" (click)="showMore = !showMore">
+      {{ !showMore ? "Show" : "Hide" }} more Details
+    </button>
+    <div class="" *ngIf="showMore">
+      <div *ngFor="let update of orderList?.updates">
+        <p style="margin: 0 0 4px">
+          <strong style="display: block">
+            <small class="badge badge-primary" style="background: #4caf50"
+              >{{ update.username || update.updatedUser.first_name }} -
+              {{ update.updatedBy }}</small
+            >
+            {{ update.status }} on:</strong
+          >
+          {{ update.createdOn | date: "dd-MM-yyyy h:mm:ss a" }}
+        </p>
+      </div>
+    </div>
+    <!-- <p style="margin: 0 0 4px;"><strong style="display: block;">Delivered :</strong> {{orderList.Order_Delivered}}</p></td> -->
+  </td>
+
+  <td>
+    <div
+      class="btn-group dropdown"
+      dropdown
+      *ngIf="
+        orderList.status.id != 4 &&
+        orderList.status.id != 3 &&
+        orderList.status.id != 11
+      "
+    >
+      <button
+        dropdownToggle
+        type="button"
+        class="btn btn-xs btn-primary dropdown-toggle"
+        aria-controls="dropdown-basic"
+        [disabled]="!retunStatus(orderList)"
+        *ngIf="retunStatus(orderList).length != 0"
+      >
+        {{ Order_name }}<span class="caret"></span>
+      </button>
+      <ul
+        id="dropdown-basic"
+        *dropdownMenu
+        class="dropdown-menu dropdown-menu-right"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li
+          *ngFor="let order of retunStatus(orderList)"
+          (click)="opendelivered(delivered, order, orderList.id, orderList)"
+        >
+          {{ order.name }}
+        </li>
+      </ul>
+    </div>
+  </td>
+</tr>
+
+<tr class="detail-row collapse" [ngClass]="isOpen ? 'show' : ''">
+  <td colspan="13" *ngIf="!orderList.items_data" style="background: #dae0ec">
+    <table class="tableee">
+      <thead>
+        <tr>
+          <td
+            style="
+              width: 220px;
+              text-align: left;
+              font-weight: 600;
+              font-size: 18px;
+            "
+          >
+            Item Name
+          </td>
+          <td
+            style="
+              width: 200px;
+              text-align: right;
+              font-weight: 600;
+              font-size: 18px;
+            "
+          >
+            Quantity
+          </td>
+          <td
+            style="
+              width: 170px;
+              text-align: right;
+              font-weight: 600;
+              font-size: 18px;
+            "
+          >
+            Price
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let Item of itemsArr" class="tdof">
+          <td style="text-align: left !important">{{ Item.item.name }}</td>
+          <td>{{ Item.quantity }}</td>
+          <td>{{ getPrices(Item) }}</td>
+        </tr>
+        <!-- {{ Item.quantity * Item.price }} -->
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Comments</strong></td>
+          <td>{{ orderList.extra_items }}</td>
+        </tr>
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Items Price</strong></td>
+          <td>{{ totalPrice }}</td>
+        </tr>
+        <tr class="tdof">
+          <td></td>
+          <td>
+            <strong style="display: block">{{
+              orderList.preferredTime ? "Service Charge" : "Delivery Fee"
+            }}</strong>
+          </td>
+          <td>{{ orderList.deliveryFee }}</td>
+        </tr>
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Tip amount</strong></td>
+          <td>{{ orderList.tip }}</td>
+        </tr>
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Discount Applied</strong></td>
+          <td>-{{ orderList.discountPrice }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Tax amount</strong></td>
+          <td>{{ orderList.tax }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">BILL TOTAL</strong></td>
+          <td>{{ orderList.finalPrice }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Paymrent Mode & Id</strong></td>
+          <td>
+            <span *ngIf="orderList.status.id == 4 && !orderList.payment_id"
+              >CASH</span
+            >
+            <span *ngIf="orderList.status.id != 4">{{
+              orderList.paymentMode
+            }}</span>
+            - {{ orderList.payment_id }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+
+  <td colspan="13" *ngIf="orderList.items_data">
+    <table>
+      <thead *ngIf="orderList.status.id != 3 && orderList.status.id != 4">
+        <tr>
+          <td colspan="2">
+            <button
+              class="btn btn-primary"
+              (click)="openPrice(updatePrice, orderList)"
+            >
+              Update Price
+            </button>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tdof">
+          <td></td>
+          <td>
+            <strong style="display: block"
+              >{{ orderList.preferredTime ? "Customer issue" : "Items" }}
+            </strong>
+          </td>
+          <td>{{ orderList.items_data }}</td>
+        </tr>
+
+        <tr class="tdof" *ngIf="!orderList.preferredTime">
+          <td></td>
+          <td><strong style="display: block">Pickup store</strong></td>
+          <td>{{ orderList?.pickup_store }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Items Price</strong></td>
+          <td>{{ orderList.itemsPrice }}</td>
+        </tr>
+
+        <tr class="tdof" *ngIf="!orderList.preferredTime">
+          <td></td>
+          <td><strong style="display: block">Tip amount</strong></td>
+          <td>{{ orderList.tip }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td>
+            <strong style="display: block">{{
+              orderList.preferredTime ? "Service Charge" : "Delivery Fee"
+            }}</strong>
+          </td>
+          <td>{{ orderList.deliveryFee }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Tax amount</strong></td>
+          <td>{{ orderList.tax }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">BILL TOTAL</strong></td>
+          <td>{{ orderList.finalPrice }}</td>
+        </tr>
+
+        <tr class="tdof">
+          <td></td>
+          <td><strong style="display: block">Paymrent Mode & Id</strong></td>
+          <td>
+            <span *ngIf="orderList.status.id == 4 && !orderList.payment_id"
+              >CASH</span
+            >
+            <span *ngIf="orderList.status.id != 4">{{
+              orderList.paymentMode
+            }}</span>
+            - {{ orderList.payment_id }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
+
+<ng-template #template>
+  <div class="modal-header">Confirmation</div>
+  <div class="modal-body text-center">
+    <p style="margin: 0 0 4px">
+      Do you want to assign Order to {{ chotu_name }}?
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="confirm()">
+      Yes
+    </button>
+    <button type="button" class="btn btn-danger" (click)="decline()">No</button>
+  </div>
+</ng-template>
+
+<ng-template #delivered>
+  <div class="modal-header">Confirmation</div>
+  <div
+    class="modal-body text-center"
+    style="display: flex; flex-direction: column"
+  >
+    <p style="margin: 0 0 4px">
+      Do you want to {{ orderInput.name }} this order?
+    </p>
+
+    <div class="form-group col-md-12" *ngIf="!orderInput.id">
+      <input
+        [(ngModel)]="reason"
+        placeholder="Enter any reason"
+        class="search-f"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="confirmDelivered()">
+      Yes
+    </button>
+    <button type="button" class="btn btn-danger" (click)="decline()">No</button>
+  </div>
+</ng-template>
+
+<ng-template #updatePrice>
+  <div class="modal-header">Update Price</div>
+  <div class="modal-body text-center">
+    <div class="form-group">
+      <label for="usr">
+        {{ orderList.preferredTime ? "Items amount" : "Amount:" }}</label
+      >
+      <input
+        type="text"
+        (keypress)="keyPress($event)"
+        class="form-control"
+        [(ngModel)]="updatePriceInput"
+      />
+    </div>
+
+    <div class="form-group" *ngIf="!orderList.preferredTime">
+      <label for="usr">Delivery Charges</label>
+      <p>{{ deliveryFee }}</p>
+    </div>
+
+    <div class="form-group">
+      <label for="usr"
+        >{{ orderList.preferredTime ? "Service" : "add/remove" }} Charges</label
+      >
+      <input
+        type="text"
+        (keypress)="keyPress($event)"
+        class="form-control"
+        [(ngModel)]="updateDeliveryPriceInput"
+      />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="updateAmount()"
+      [disabled]="isDisabled()"
+    >
+      Update Amount
+    </button>
+    <button type="button" class="btn btn-danger" (click)="decline()">
+      Cancel
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,17 @@
+<span class="menu-header">
+  <div [ngStyle]="{'border-left-color': menu.type == 'nv' ? 'red' : 'green' }">{{menu.name}}</div>
+  <div>{{menu.updated_item_price}}</div>
+  <div *ngIf="menu.is_active == 1">
+    <span class="input-group">
+      <input type="text" maxlength="4"  class="form-control" (keyup)="onChange()"  [(ngModel)]="count">
+      <span class="input-group-addon btn btn-warning" [ngClass]= "!isNum?'dis':''" (click)="valueChanged()" >Add</span>
+    </span>
+
+    
+  </div>
+
+  <div *ngIf="menu.is_active == 0">
+    <strong>Unavailable</strong> 
+  </div>
+
+</span>

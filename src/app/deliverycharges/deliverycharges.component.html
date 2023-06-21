@@ -1,0 +1,77 @@
+<div class="content-wrapper container">
+
+    <div class="card card-default" >
+      <div class="card-header"> Locations
+      </div>
+  
+      <div class="card-body ">
+  
+        <button class="btn btn-primary btn-sm"  (click)="isEdit('','')">Create</button>
+        <table class="table table-stripped" *ngIf="locationArr.length>0">
+          <thead>
+  
+            <tr>
+              <td>ID</td>
+              <td>Distance</td>
+              <!-- <td>Status</td> -->
+              <td>Price</td>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let location of locationArr; let index = index">
+              <td>{{location.id}}</td>
+              <td>{{location.distance}}</td>
+              <td>{{location.cost}}</td>
+             
+              <td> <button class="btn btn-primary btn-sm" (click)="isEdit(location, index)">Edit</button></td>
+
+
+            </tr>
+            <td>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal-backdrop" *ngIf="openModel"></div>
+  <div class="modal fade in" *ngIf="openModel">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabel"> Create Location</h4>
+              </div>
+              <div class="modal-body">
+  
+                <table class="table table-stripped">
+                  <thead>
+          
+                    <tr>
+                      <td>Distance</td>
+                      <td>Price</td>
+                      
+                    </tr>
+
+                    
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input class="form-control" type="text" [(ngModel)]="name" /></td>
+                      <td><input class="form-control" type="text" [(ngModel)]="lat" /></td>
+                      
+                      
+                      <td> <button class="btn btn-primary btn-sm"  (click)="isEditMode?isUpdate():create()">{{isEditMode?'Update':'Create'}}</button></td>
+                    </tr>
+                    <td>
+                  </tbody>
+                </table>
+  
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" (click)="closeFn()">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>

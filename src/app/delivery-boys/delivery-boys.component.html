@@ -1,0 +1,189 @@
+<div class="content-wrapper container">
+  <div class="card card-default" *ngIf="!displayItem">
+    <label>select location</label>
+    <select class="form-control loc-drop"  [(ngModel)]="location" (change)='selectLoc()'>
+      <option *ngFor="let item of locationListArr" [value]="item.id">{{item.name}}</option>
+    </select>
+  </div>
+  <div class="card card-default" *ngIf="displayItem">
+    <div class="card-header">
+      Add Boys
+      <button
+        class="btn btn-primary btn-sm pull-right"
+        (click)="isOpenBoy = !isOpenBoy"
+      >
+        Add Boy
+      </button>
+    </div>
+    <div class="card-body" *ngIf="isOpenBoy">
+      <div class="">
+        <form [formGroup]="registerForm" (ngSubmit)="AddBoys()">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                formControlName="firstName"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }"
+              />
+              <div
+                *ngIf="submitted && f.firstName.errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f.firstName.errors.required">
+                  First Name is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                formControlName="lastName"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }"
+              />
+              <div
+                *ngIf="submitted && f.lastName.errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f.lastName.errors.required">
+                  Last Name is required
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Select Category <span class="required">*</span></label>
+
+              <select
+                formControlName="boyCategory"
+                class="form-control"
+                multiple
+                style="height: 200px"
+              >
+                <option
+                  *ngFor="let category of categories"
+                  [ngValue]="category.id"
+                >
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Aadhaar</label>
+              <input
+                type="text"
+                formControlName="aadhaar"
+                class="form-control"
+                maxlength="12"
+              />
+            </div>
+            <div class="form-group">
+              <label>Driving License</label>
+              <input
+                type="text"
+                formControlName="drivingLicense"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                type="text"
+                formControlName="email"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+              />
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">Email is required</div>
+                <div *ngIf="f.email.errors.email">
+                  Email must be a valid email address
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input
+                type="text"
+                formControlName="phone"
+                class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.phone.errors }"
+                maxlength="10"
+              />
+              <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                <div *ngIf="f.phone.errors.required">phone is required</div>
+                <div *ngIf="f.phone.errors.minlength">
+                  phone must be at least 10 characters
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Address</label>
+              <textarea
+                formControlName="deliveryBoyAddress"
+                class="form-control"
+                rows="4"
+              >
+              </textarea>
+            </div>
+            <div class="form-group">
+              <label>Emergency Phone Number</label>
+              <input
+                type="text"
+                formControlName="emergencyPhoneNumber"
+                class="form-control"
+                maxlength="10"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-primary" [disabled]="registerForm.invalid">
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-default" *ngIf="boysArr.length > 0 && displayItem">
+    <div class="card-header">
+      <tabset>
+        <tab heading="Active Executives" (selectTab)="isActive = '1'"></tab>
+        <tab heading="Inactive Executives" (selectTab)="isActive = '0'"></tab>
+      </tabset>
+
+      <!-- <input [(ngModel)]="terms" placeholder="Search Item" class="search-f" /> -->
+    </div>
+
+    <div class="card-body">
+      <div class="menu-header">
+        <div style="border-left: none">id</div>
+        <div>Name</div>
+        <div>Phone</div>
+        <div>Actions</div>
+        <!-- <div>View</div> -->
+      </div>
+      <span>
+        <boy-name
+          *ngFor="let boy of showBoys(isActive) | search: terms:first_name"
+          [boy]="boy"
+          (editBoy)="editBoy($event)"
+          (valueChange)="getItem($event)"
+        ></boy-name>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>

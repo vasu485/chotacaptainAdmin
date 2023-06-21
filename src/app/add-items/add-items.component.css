@@ -1,0 +1,151 @@
+.content-wrapper {
+    padding: 20px;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    border-top-width: 3px;
+    border-color: #cfdbe2;
+    margin-bottom: 1.25rem;
+}
+.card .card-header {
+    border-bottom: 0;
+    padding: .625rem .9375rem;
+    background-color: transparent;
+    background-color: #fff;
+    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+    font-weight: 600;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: .9375rem;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px;
+    justify-content: center;
+}
+.align-items-center {
+    align-items: center!important;
+}
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.restarant{
+    width: 100%;
+    min-height: 36px;
+}
+
+
+.headerMenu{
+    display: flex;
+    font-weight: 600;
+    background-color: #f3f3f3;
+    padding: 6px;
+    margin: 10px 0 0;
+    border-bottom: 1px solid #ccc;
+    color: #fb6500;
+    font-size: 16px;
+}
+
+.menu-header{
+    display: flex;
+    font-weight: 600;
+    margin-bottom:8px ;
+}
+
+.menu-header:first-child{
+    border: 1px solid #dad2a8;
+    background: #fcf8e3;
+}
+.menu-header:first-child div{
+    border-left: none;
+}
+
+.menu-header div{
+    padding: 8px;
+    border-left: 1px solid #eee;
+    text-align: right;
+}
+.menu-header div:first-child{
+    flex: 65%;
+    text-align: left;
+    border: none;
+    border-left:4px solid #efefef;
+}
+
+.menu-header div:nth-child(2){
+    flex: 15%;
+    text-align: center;
+}
+.menu-header div:last-child{
+    flex: 20%;
+}
+
+.search-f{
+    float: right;
+    width: 50%;
+    /* height: 36px; */
+    padding: 6px 12px;
+}
+
+.register-form .col-md-6{
+    float: left;
+    width : 50%;
+}
+
+.tr{
+    border: 1px solid #dad2a8;
+    background: #fcf8e3;
+    font-weight: 600;
+}
+
+.my-table{
+    border-collapse: separate;
+border-spacing: 0 8px;
+border: none;
+}
+
+.my-table th{
+    background: rgba(246, 77, 0, 0.32941176470588235);
+border-top: 1px solid #ddd !important;
+}
+
+.m-4{
+    margin: 0 4px;
+}
+
+
+.extra-menu{
+    margin-top: 20px;
+    border-top: 2px solid rgba(0,0,0,.08) !important;
+}
+
+.extra-menu h5{
+    display: flex;
+    justify-content: flex-start;
+    padding: 8px 4px 20px;
+    border-bottom: 1px solid rgba(0,0,0,.08) !important;
+}
+
+.extra-menu h5 div{
+flex: 0 0 50%;
+}

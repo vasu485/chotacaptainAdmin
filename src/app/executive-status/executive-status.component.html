@@ -1,0 +1,452 @@
+<div class="loader-backdrop" *ngIf="isLoading">
+  <div class="loader"></div>
+  <h4>Loading...</h4>
+</div>
+<div class="content-wrapper">
+  <div class="card card-default" *ngIf="statusBoys?.length > 0">
+    <div class="card-header">
+      Executive's Status: <strong>Active: {{ ActiveCount }}</strong
+      >, <strong>In-Active: {{ InActiveCount }}</strong>
+
+      <button
+        class="btn btn-danger pull-right"
+        (click)="currentOrdersStatusFn()"
+      >
+        Reload
+      </button>
+    </div>
+
+    <div class="card-header">
+      <div class="card-header" style="display: flex; align-items: center">
+        Select Date:
+
+        <input
+          type="date"
+          [(ngModel)]="selectDate"
+          placeholder="Search Item"
+          class="search-f"
+          [max]="toDateDis"
+          style="width: 170px"
+        /><button
+          class="btn btn-primary pull-right"
+          (click)="currentOrdersStatusFn()"
+          style="margin-left: 10px"
+        >
+          Submit
+        </button>
+      </div>
+
+      <div class="card-body">
+        <table class="table table-stripped">
+          <thead>
+            <tr class="tr">
+              <td>ID</td>
+              <td>Name</td>
+              <td>Mobile</td>
+              <td>Status</td>
+              <td class="text-center">Waiting</td>
+              <td class="text-center">Accepted</td>
+              <td class="text-center">On the way</td>
+              <td class="text-center">Delivered</td>
+              <td class="text-center">Not Delivered</td>
+              <td class="text-center">Received</td>
+              <td class="text-center">Rejected</td>
+              <!-- <td>Location</td> -->
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let excutive of statusBoys">
+              <td>{{ excutive.id }}</td>
+              <td>{{ excutive.first_name }}</td>
+              <td>
+                <span
+                  class="label"
+                  [ngClass]="
+                    excutive.is_active == 0 ? 'label-danger' : 'label-success'
+                  "
+                  >{{ excutive.is_active == 0 ? "In-Active" : "Active" }}</span
+                >
+              </td>
+              <td>{{ excutive.mobile }}</td>
+              <td class="trtd">
+                <button
+                  class="btn btn-danger"
+                  (click)="
+                    showOrders(
+                      excutive.waiting_for_boy_confirmation_orders,
+                      excutive.first_name,
+                      'Waiting'
+                    )
+                  "
+                >
+                  {{ excutive.waiting_for_boy_confirmation_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-warning"
+                  (click)="
+                    showOrders(
+                      excutive.accepted_orders,
+                      excutive.first_name,
+                      'Accepted'
+                    )
+                  "
+                >
+                  {{ excutive.accepted_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-primary"
+                  (click)="
+                    showOrders(
+                      excutive.ontheway_orders,
+                      excutive.first_name,
+                      'On the way'
+                    )
+                  "
+                >
+                  {{ excutive.ontheway_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-success"
+                  (click)="
+                    showOrders(
+                      excutive.delivered_orders,
+                      excutive.first_name,
+                      'Delivered'
+                    )
+                  "
+                >
+                  {{ excutive.delivered_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-default"
+                  (click)="
+                    showOrders(
+                      excutive.not_delivered_orders,
+                      excutive.first_name,
+                      'Not Delivered'
+                    )
+                  "
+                >
+                  {{ excutive.not_delivered_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-success"
+                  (click)="
+                    showOrders(
+                      excutive.expired_orders,
+                      excutive.first_name,
+                      'Received'
+                    )
+                  "
+                >
+                  {{ excutive.expired_orders.length }}
+                </button>
+              </td>
+              <td class="trtd">
+                <button
+                  class="btn btn-danger"
+                  (click)="
+                    showOrders(
+                      excutive.rejected_orders,
+                      excutive.first_name,
+                      'Rejected'
+                    )
+                  "
+                >
+                  {{ excutive.rejected_orders.length }}
+                </button>
+              </td>
+              <!-- <td class="trtd">
+                <button class="btn btn-primary btn-sm" [disabled]="true">
+                  Get
+                </button>
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="openModel"></div>
+  <div class="modal fade in" *ngIf="openModel">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeFn()">
+            &times;
+          </button>
+          <h4 class="modal-title">{{ first_name }}'s {{ type }} Orders</h4>
+        </div>
+        <div class="modal-body">
+          <div style="width: 100%">
+            <div class="box">
+              <p
+                *ngFor="let order of orders"
+                class="label label-default k"
+                (click)="showOrderDetails(order)"
+              >
+                {{ order }}
+              </p>
+            </div>
+
+            <div *ngIf="orderList.length != 0">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Vendor</th>
+                    <th>Items</th>
+                    <th>Order Price</th>
+                    <th>Status</th>
+                    <th style="width: 200px">Details</th>
+                    <!-- <th>Delivery boy</th> -->
+                    <th>Order Timings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>#{{ orderList?.id }}</strong>
+                    </td>
+
+                    <td>
+                      <div class="types">
+                        <div
+                          class="order-type"
+                          *ngIf="
+                            orderList?.vendor?.categoryId == 1 ||
+                            orderList?.categoryId == 1
+                          "
+                        >
+                          Food Orders
+                        </div>
+                        <div
+                          class="order-type"
+                          *ngIf="
+                            orderList?.vendor?.categoryId == 21 ||
+                            orderList?.categoryId == 21
+                          "
+                        >
+                          Vegtables/Fruites/Dairy Orders
+                        </div>
+                        <div
+                          class="order-type"
+                          *ngIf="
+                            orderList?.vendor?.categoryId == 20 ||
+                            orderList?.categoryId == 20
+                          "
+                        >
+                          Meat/Fish Orders
+                        </div>
+                        <div
+                          class="order-type"
+                          *ngIf="
+                            orderList?.vendor?.categoryId == 18 ||
+                            orderList?.categoryId == 18
+                          "
+                        >
+                          Grocery Orders
+                        </div>
+                        <div
+                          class="card-vendor"
+                          [ngClass]="{
+                            'misc-order': !orderList?.vendor,
+                            'food-vendor ':
+                              orderList?.vendor?.categoryId == 1 ||
+                              orderList?.categoryId == 1,
+                            'veg-vendor ':
+                              orderList?.vendor?.categoryId == 21 ||
+                              orderList?.categoryId == 21,
+                            'meat-vendor ':
+                              orderList?.vendor?.categoryId == 20 ||
+                              orderList?.categoryId == 20,
+                            'grocery-vendor ':
+                              orderList?.vendor?.categoryId == 18 ||
+                              orderList?.categoryId == 18
+                          }"
+                        >
+                          {{
+                            orderList?.vendor ? orderList?.vendor.name : "Misc "
+                          }}
+                        </div>
+                      </div>
+                    </td>
+
+                    <td style="width: 150px">
+                      <div *ngFor="let items of orderList?.items">
+                        {{ items.item.name }} X {{ items.quantity }} =
+                        <strong>{{ items.price }}</strong>
+                        <!-- {{orderList?.items | json}} -->
+                      </div>
+                      <div *ngIf="orderList?.extra_items">
+                        Extra items: {{ orderList?.extra_items }}
+                      </div>
+                      <div *ngIf="orderList?.items_data">
+                        {{ orderList?.items_data }} =
+                        <strong>{{ orderList?.itemsPrice }}</strong>
+                      </div>
+                      <div>
+                        {{
+                          orderList.preferredTime
+                            ? "Service Charge"
+                            : "Delivery Fee"
+                        }}
+                        =
+                        <strong>{{ orderList?.deliveryFee }}</strong>
+                      </div>
+                    </td>
+
+                    <td>{{ orderList?.finalPrice }}</td>
+
+                    <td style="width: 150px">
+                      <span class="badge badge-pill badge-ontheway">{{
+                        orderList?.status.name
+                      }}</span>
+                      <div
+                        *ngIf="
+                          orderList?.delivery_time &&
+                          (orderList?.status.id == 2 ||
+                            orderList?.status.id == 6)
+                        "
+                      >
+                        <strong style="display: block">Preparation Time</strong>
+                        {{ orderList?.delivery_time }} min
+                      </div>
+                      <div *ngIf="orderList?.cancel_reason">
+                        <strong style="display: block">Cancel Reason</strong>
+                        {{ orderList?.cancel_reason }}
+                      </div>
+                    </td>
+
+                    <td
+                      style="position: relative"
+                      [ngClass]="{
+                        orangeq:
+                          orderList?.order_by.prime_customer != 0 &&
+                          orderList.deliveryFee == 0
+                      }"
+                    >
+                      <strong
+                        *ngIf="
+                          orderList?.order_by.prime_customer != 0 &&
+                          orderList.categoryId == 1 &&
+                          orderList.deliveryFee == 0
+                        "
+                        style="color: orangered"
+                        >[Subscribed to FOODIE]</strong
+                      >
+                      <strong
+                        *ngIf="
+                          orderList?.order_by.prime_customer != 0 &&
+                          orderList.categoryId != 1 &&
+                          orderList.deliveryFee == 0
+                        "
+                        style="color: orangered"
+                        >[Subscribed to SUPREME]</strong
+                      >
+
+                      <p
+                        *ngIf="orderList?.order_by.prime_customer == 0"
+                        style="margin: 0 0 4px"
+                      >
+                        <strong style="display: block">Address</strong>
+                      </p>
+
+                      <p style="width: 200px" *ngIf="orderList?.address">
+                        {{ orderList?.address }}
+                      </p>
+                      <p style="margin: 0 0 4px">
+                        <strong style="display: block">Location</strong
+                        >{{ orderList?.location.name }}
+                      </p>
+                      <p style="margin: 0 0 4px">
+                        <strong style="display: block">Mobile</strong
+                        >{{ orderList?.order_by.mobile }}
+                      </p>
+                      <p *ngIf="orderList?.alt_mobile">
+                        <strong style="display: block">Alternate Mobile</strong
+                        >{{ orderList?.alt_mobile }}
+                      </p>
+                    </td>
+
+                    <!--   
+                          <td>
+                            <p style="margin: 0 0 4px;"><strong style="display: block;">Name</strong>{{ orderList?.deliveryBoy.first_name }}</p>
+                            <p style="margin: 0 0 4px;"><strong style="display: block;">Mobile</strong>{{ orderList?.deliveryBoy.mobile }}</p>
+
+                          </td> -->
+
+                    <td>
+                      <div *ngFor="let update of orderList?.updates">
+                        <p style="margin: 0 0 4px">
+                          <strong style="display: block">
+                            <small
+                              class="badge badge-primary"
+                              style="background: #4caf50"
+                              >{{ update.updatedUser.first_name }} -
+                              {{ update.updatedBy }}</small
+                            >
+                            {{ update.status }} on:</strong
+                          >
+                          {{ update.createdOn | date: "dd-MM-yyyy h:mm:ss a" }}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="closeFn()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="openModel1"></div>
+  <div class="modal fade in" *ngIf="openModel1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            {{ excutive.first_name }}'s Location {{ lat }} - {{ long }}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <agm-map
+            style="height: 300px"
+            [latitude]="lat"
+            [longitude]="long"
+            [zoom]="16"
+          >
+            <agm-marker [latitude]="lat" [longitude]="long"></agm-marker>
+          </agm-map>
+
+          <!-- <agm-map [latitude]='lat' [longitude]='long' [mapTypeId]='googleMapType'>
+            </agm-map> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="closeFn()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

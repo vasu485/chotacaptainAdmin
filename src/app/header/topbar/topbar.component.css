@@ -1,0 +1,67 @@
+.spacer {
+  flex: 1;
+}
+
+.toolbar {
+  height: 62px;
+  display: flex;
+  align-items: center;
+
+  color: white;
+  font-weight: 600;
+  position: relative;
+  z-index: 100;
+  background: #8a6d3b;
+}
+
+.toolbar.admin {
+  background-image: linear-gradient(to right, #ff7900, #ed1a00);
+}
+.toolbar.op {
+  background-image: linear-gradient(to right, #3f51b5, #ed1a00);
+}
+
+.toolbar.ed {
+  background-image: linear-gradient(to right, #9c27b0, #ed1a00);
+}
+
+.toolbar img {
+  margin: 0 16px;
+}
+
+.toolbar #twitter-logo {
+  height: 40px;
+  margin: 0 16px;
+}
+
+.toolbar #twitter-logo:hover {
+  opacity: 0.8;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+.rounded-circle {
+  border-radius: 50% !important;
+}
+.nav-link {
+  color: #fff;
+  cursor: pointer;
+}
+.nav-link:hover {
+  color: #ed1a00;
+  background-color: #fff;
+}
+.nav-link.nav-icon {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  margin-left: 60px;
+}
